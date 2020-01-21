@@ -1,7 +1,7 @@
 # Личный проект «Типотека» [![Build status][travis-image]][travis-url]
 
 * Студент: [Дмитрий Мамонов](https://up.htmlacademy.ru/nodejs/3/user/194522).
-* Наставник: `Неизвестно`.
+* Наставник: [Константин Мамаев](https://htmlacademy.ru/profile/meison).
 
 ---
 
