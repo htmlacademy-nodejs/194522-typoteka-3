@@ -1,5 +1,6 @@
 'use strict';
 
+const chalk = require(`chalk`);
 const {USER_ARGV_INDEX, DEFAULT_COMMAND, ExitCode} = require(`../constants`);
 const Cli = require(`./cli`);
 
@@ -12,7 +13,7 @@ if (userArguments.length === 0 || !Cli[userCommand]) {
 }
 
 if (userMockItemsCount > 1000) {
-  console.info(`Не больше 1000 публикаций`);
+  console.info(chalk.red(`Не больше 1000 публикаций`));
   process.exit(ExitCode.error);
 }
 
