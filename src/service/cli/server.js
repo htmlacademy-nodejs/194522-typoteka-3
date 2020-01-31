@@ -3,19 +3,20 @@
 const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
 const http = require(`http`);
-const {HttpCode} = require(`../../constants`);
+const {StatusCode} = require(`../../constants`);
 
 const DEFAULT_PORT = 3000;
-const FILENAME = `mock.json`;
+const FILE_NAME = `mock.json`;
+const NOT_FOUND_MESSAGE = `Не найдено`;
 
-const sendResponse = (res, statusCode, message) => {
+const sendResponse = (res, statusCode, markup) => {
   const template = `
     <!DOCTYPE html>
     <html lang="en">
       <head>
         <title>Типотека</title>
       </head>
-      <body>${message}</body>
+      <body>${markup}</body>
     </html>`.trim();
 
   res.statusCode = statusCode;
@@ -26,21 +27,18 @@ const sendResponse = (res, statusCode, message) => {
 };
 
 const onClientConnect = async (req, res) => {
-  const notFoundMessageText = `Not found`;
-
   switch (req.url) {
     case `/`:
       try {
-        const fileContent = await fs.readFile(FILENAME);
-        const mocks = JSON.parse(fileContent);
-        const message = mocks.map((post) => `<li>${post.title}</li>`).join(``);
-        sendResponse(res, HttpCode.OK, `<ul>${message}</ul>`);
+        const fileContent = await fs.readFile(FILE_NAME, `utf-8`);
+        const markup = JSON.parse(fileContent).map((post) => `<li>${post.title}</li>`).join(``);
+        sendResponse(res, StatusCode.OK, `<ul>${markup}</ul>`);
       } catch (err) {
-        sendResponse(res, HttpCode.NOT_FOUND, notFoundMessageText);
+        sendResponse(res, StatusCode.NOT_FOUND, NOT_FOUND_MESSAGE);
       }
       break;
     default:
-      sendResponse(res, HttpCode.NOT_FOUND, notFoundMessageText);
+      sendResponse(res, StatusCode.NOT_FOUND, NOT_FOUND_MESSAGE);
       break;
   }
 };
@@ -48,8 +46,8 @@ const onClientConnect = async (req, res) => {
 module.exports = {
   name: `--server`,
   run(args) {
-    const [customPort] = args;
-    const port = parseInt(customPort, 10) || DEFAULT_PORT;
+    const [userPort] = args;
+    const port = parseInt(userPort, 10) || DEFAULT_PORT;
     http.createServer(onClientConnect)
       .listen(port)
       .on(`listening`, (err) => {

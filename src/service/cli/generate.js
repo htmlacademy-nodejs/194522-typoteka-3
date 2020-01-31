@@ -13,9 +13,9 @@ const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_TEXTS_PATH = `./data/texts.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_NAME = `mock.json`;
-const DEFAULT_COUNT = 1;
+const DEFAULT_MOCKS_QUANTITY = 1;
 const MILLISECONDS_IN_THREE_MONTH = 7776000000;
-const MAX_MOCK_ITEMS = 1000;
+const MAX_MOCKS_QUANTITY = 1000;
 
 const DatesLimit = {
   min: Date.now() - MILLISECONDS_IN_THREE_MONTH,
@@ -42,8 +42,8 @@ const readFile = async (path) => {
   }
 };
 
-const generateArticles = (count, titles, texts, categories) => {
-  return Array(count).fill({}).map(() => ({
+const generateArticles = (quantity, titles, texts, categories) => {
+  return Array(quantity).fill({}).map(() => ({
     announce: getRandomArrayElements(getRandomInt(AnnounceLength.min, AnnounceLength.max), texts),
     category: getRandomArrayElement(categories),
     createdDate: getRandomInt(DatesLimit.min, DatesLimit.max),
@@ -55,9 +55,9 @@ const generateArticles = (count, titles, texts, categories) => {
 module.exports = {
   name: `--generate`,
   async run(args) {
-    const [itemsCount] = args;
-    const articlesCount = parseInt(itemsCount, 10) || DEFAULT_COUNT;
-    if (itemsCount > MAX_MOCK_ITEMS) {
+    const [userMocksQuantity] = args;
+    const articlesCount = parseInt(userMocksQuantity, 10) || DEFAULT_MOCKS_QUANTITY;
+    if (userMocksQuantity > MAX_MOCKS_QUANTITY) {
       console.info(chalk.red(`Не больше 1000 публикаций`));
       process.exit(ExitCode.error);
     }
