@@ -20,28 +20,28 @@ const MILLISECONDS_IN_THREE_MONTH = 7776000000;
 const MAX_MOCKS_QUANTITY = 1000;
 
 const DatesLimit = {
-  min: Date.now() - MILLISECONDS_IN_THREE_MONTH,
-  max: Date.now(),
+  MIN: Date.now() - MILLISECONDS_IN_THREE_MONTH,
+  MAX: Date.now(),
 };
 
 const AnnounceLength = {
-  min: 1,
-  max: 5
+  MIN: 1,
+  MAX: 5
 };
 
 const FullTextLength = {
-  min: 1,
-  max: 5
+  MIN: 1,
+  MAX: 5
 };
 
 const commentsQuantity = {
-  min: 1,
-  max: 3
+  MIN: 1,
+  MAX: 3
 };
 
 const CommentLength = {
-  min: 1,
-  max: 3
+  MIN: 1,
+  MAX: 3
 };
 
 const readFile = async (path) => {
@@ -57,14 +57,14 @@ const readFile = async (path) => {
 const generateArticles = (quantity, titles, texts, categories, comments) => {
   return Array(quantity).fill({}).map(() => ({
     id: nanoid(MAX_ID_LENGTH),
-    announce: getRandomArrayElements(getRandomInt(AnnounceLength.min, AnnounceLength.max), texts),
+    announce: getRandomArrayElements(getRandomInt(AnnounceLength.MIN, AnnounceLength.MAX), texts),
     category: getRandomArrayElement(categories),
-    createdDate: getRandomInt(DatesLimit.min, DatesLimit.max),
-    fullText: getRandomArrayElements(getRandomInt(FullTextLength.min, FullTextLength.max), texts),
+    createdDate: getRandomInt(DatesLimit.MIN, DatesLimit.MAX),
+    fullText: getRandomArrayElements(getRandomInt(FullTextLength.MIN, FullTextLength.MAX), texts),
     title: getRandomArrayElement(titles),
-    comments: Array(getRandomInt(commentsQuantity.min, commentsQuantity.max)).fill({}).map(() => ({
+    comments: Array(getRandomInt(commentsQuantity.MIN, commentsQuantity.MAX)).fill({}).map(() => ({
       id: nanoid(MAX_ID_LENGTH),
-      text: getRandomArrayElements(getRandomInt(CommentLength.min, CommentLength.max), comments)
+      text: getRandomArrayElements(getRandomInt(CommentLength.MIN, CommentLength.MAX), comments)
     }))
   }));
 };
@@ -76,7 +76,7 @@ module.exports = {
     const articlesCount = parseInt(userMocksQuantity, 10) || DEFAULT_MOCKS_QUANTITY;
     if (userMocksQuantity > MAX_MOCKS_QUANTITY) {
       console.info(chalk.red(`Не больше 1000 публикаций`));
-      process.exit(ExitCode.error);
+      process.exit(ExitCode.ERROR);
     }
     try {
       const generateArticlesParams = await Promise.all([
