@@ -2,11 +2,10 @@
 
 const express = require(`express`);
 const chalk = require(`chalk`);
-const fs = require(`fs`).promises;
-const {StatusCode} = require(`../../constants`);
+const {StatusCode, API_PREFIX} = require(`../../constants`);
+const apiRouter = require(`../api/`);
 
 const DEFAULT_PORT = 3000;
-const FILE_NAME = `mock.json`;
 const NOT_FOUND_MESSAGE = `Не найдено`;
 
 module.exports = {
@@ -15,17 +14,9 @@ module.exports = {
     const [userPort] = args;
     const port = parseInt(userPort, 10) || DEFAULT_PORT;
     const app = express();
-    app.use(express.json());
 
-    app.get(`/posts`, async (req, res) => {
-      try {
-        const fileContent = await fs.readFile(FILE_NAME, `utf-8`);
-        const mock = JSON.parse(fileContent);
-        res.send(mock);
-      } catch (err) {
-        res.send([]);
-      }
-    });
+    app.use(express.json());
+    app.use(API_PREFIX, apiRouter);
 
     app.use((req, res) => {
       res.status(StatusCode.NOT_FOUND).send(NOT_FOUND_MESSAGE);
