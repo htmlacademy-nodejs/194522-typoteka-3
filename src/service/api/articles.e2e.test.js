@@ -4,8 +4,7 @@ const request = require(`supertest`);
 const express = require(`express`);
 const {StatusCode} = require(`../../constants`);
 const articles = require(`./articles`);
-const ArticleService = require(`../data-service/article`);
-const CommentService = require(`../data-service/comment`);
+const {ArticlesService, CommentsService} = require(`../data-service`);
 
 const mockData = [
   {
@@ -84,7 +83,7 @@ const createApp = () => {
   const app = express();
   const cloneData = JSON.parse(JSON.stringify(mockData));
   app.use(express.json());
-  articles(app, new ArticleService(cloneData), new CommentService(cloneData));
+  articles(app, new ArticlesService(cloneData), new CommentsService(cloneData));
   return app;
 };
 

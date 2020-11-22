@@ -3,7 +3,7 @@
 const {nanoid} = require(`nanoid`);
 const {MAX_ID_LENGTH} = require(`../../constants`);
 
-class CommentService {
+class CommentsService {
   findAll(article) {
     return article.comments;
   }
@@ -27,4 +27,4 @@ class CommentService {
   }
 }
 
-module.exports = CommentService;
+module.exports = CommentsService;
