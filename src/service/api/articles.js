@@ -16,7 +16,7 @@ module.exports = (apiRouter, articleService, commentService) => {
   });
 
   articlesRouter.get(`/:articleId`, articleExist(articleService), (req, res) => {
-    const {article} = req.locals;
+    const {article} = res.locals;
     return res.status(StatusCode.OK).json(article);
   });
 
