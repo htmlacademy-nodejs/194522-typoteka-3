@@ -17,7 +17,7 @@ block content
                 .new-publication__date-form-division
                   .new-publication__date-block
                     label(for='new-publication-date' aria-label='Календарь')
-                    input#new-publication-date(type='text' name='login' placeholder='21.03.2019')
+                    input#new-publication-date(type='text' name='date' placeholder='21.03.2019')
               button.new-publication__button.button.button--colored(type='submit') Опубликовать
             button.popup__button.button.button--popup-close(type='button' aria-label='Закрыть окно')
               | Закрыть
@@ -29,14 +29,14 @@ block content
                     input(type='text' placeholder='Заголовок' required='' name='title')
                 .form__field.form__field--post-image
                   label
-                    input#image-name-field(type='text' placeholder='Фотография' readonly='' name='cover')
+                    input#image-name-field(type='text' placeholder='Фотография' readonly='' name='image-name-field')
                   .form__image-loader.form__image-loader--publication
                     label
-                      input.visually-hidden(type='file' name='file')
+                      input.visually-hidden(type='file' name='cover')
                       | Обзор
                 each category in categories
                   .new-publication__checkbox.new-publication__checkbox--auto
-                    input(id=category type='checkbox' name='category')
+                    input(id=category type='checkbox' name='category' value=category)
                     label(for=category) #{category}
                 a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
               .form__wrapper.form__wrapper--text
