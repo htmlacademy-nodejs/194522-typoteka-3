@@ -9,80 +9,25 @@ block content
     section.main-page__publication.publication
       h1.publication__title Комментарии
       ul.publication__list
-        li.publication__list-item
-          .publication__header
-            img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-            b.publication__list-name Александр Петров
-            time.publication__item-time(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-          a.publication__item-text(href='#')
-            | Главреды «Дождя», Forbes и других СМИ попросили Роскомнадзор разъяснить штрафы за ссылки на сайты.
-          p.publication__text-strong
-            | «Яндекс.Метрика» запустила бесплатный сервис для оценки эффективности баннеров и видеорекламы в реальном времени
-          button.publication__button.button.button--close-item(type='button')
-            span.visually-hidden Закрыть строку списка
-        li.publication__list-item
-          .publication__header
-            img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-            b.publication__list-name Александр Петров
-            time.publication__item-time(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-          a.publication__item-text(href='#')
-            | Главреды «Дождя», Forbes и других СМИ попросили Роскомнадзор разъяснить штрафы за ссылки на сайты.
-          p.publication__text-strong
-            | Игровая студия Playrix из Вологды потратила более $100 млн на покупку конкурентов в 2018 году
-          button.publication__button.button.button--close-item(type='button')
-            span.visually-hidden Закрыть строку списка
-        li.publication__list-item
-          .publication__header
-            img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-            b.publication__list-name Александр Петров
-            time.publication__item-time(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-          a.publication__item-text(href='#')
-            | Главреды «Дождя», Forbes и других СМИ попросили Роскомнадзор разъяснить штрафы за ссылки на сайты.
-          p.publication__text-strong
-            | «Яндекс.Метрика» запустила бесплатный сервис для оценки эффективности баннеров и видеорекламы в реальном времени
-          button.publication__button.button.button--close-item(type='button')
-            span.visually-hidden Закрыть строку списка
-        li.publication__list-item
-          .publication__header
-            img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-            b.publication__list-name Александр Петров
-            time.publication__item-time(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-          a.publication__item-text(href='#')
-            | Главреды «Дождя», Forbes и других СМИ попросили Роскомнадзор разъяснить штрафы за ссылки на сайты.
-          p.publication__text-strong
-            | Игровая студия Playrix из Вологды потратила более $100 млн на покупку конкурентов в 2018 году
-          button.publication__button.button.button--close-item(type='button')
-            span.visually-hidden Закрыть строку списка
-        li.publication__list-item
-          .publication__header
-            img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-            b.publication__list-name Александр Петров
-            time.publication__item-time(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-          a.publication__item-text(href='#')
-            | Главреды «Дождя», Forbes и других СМИ попросили Роскомнадзор разъяснить штрафы за ссылки на сайты.
-          p.publication__text-strong
-            | Игровая студия Playrix из Вологды потратила более $100 млн на покупку конкурентов в 2018 году
-          button.publication__button.button.button--close-item(type='button')
-            span.visually-hidden Закрыть строку списка
-        li.publication__list-item
-          .publication__header
-            img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-            b.publication__list-name Александр Петров
-            time.publication__item-time(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-          a.publication__item-text(href='#')
-            | Главреды «Дождя», Forbes и других СМИ попросили Роскомнадзор разъяснить штрафы за ссылки на сайты.
-          p.publication__text-strong
-            | «Яндекс.Метрика» запустила бесплатный сервис для оценки эффективности баннеров и видеорекламы в реальном времени
-          button.publication__button.button.button--close-item(type='button')
-            span.visually-hidden Закрыть строку списка
-        li.publication__list-item.publication__list-item--last
-          .publication__header
-            img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-            b.publication__list-name Александр Петров
-            time.publication__item-time(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-          a.publication__item-text(href='#')
-            | Главреды «Дождя», Forbes и других СМИ попросили Роскомнадзор разъяснить штрафы за ссылки на сайты.
-          p.publication__text-strong
-            | Игровая студия Playrix из Вологды потратила более $100 млн на покупку конкурентов в 2018 году
-          button.publication__button.button.button--close-item(type='button')
-            span.visually-hidden Закрыть строку списка
+        each article in articles
+          li.publication__list-item
+            .publication__header
+              img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
+              b.publication__list-name Александр Петров
+              time.publication__item-time(datetime='2019-03-21T20:33') #{article.createdDate}
+            a.publication__item-text(href='#')
+              | #{article.title}
+            p.publication__text-strong
+              | #{article.announce}
+            button.publication__button.button.button--close-item(type='button')
+              span.visually-hidden Закрыть строку списка
+            ul.comments__list
+              each comment in article.comments
+                li.comments__comment
+                  .comments__avatar.avatar
+                    img(src='/img/avatar-1.png' alt='аватар пользователя')
+                  .comments__text
+                    .comments__head
+                      p Евгений Петров •
+                      time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
+                    p.comments__message #{comment.text}
