@@ -10,15 +10,13 @@ mainRouter.get(`/`, async (req, res) => {
   res.render(`main`, {articles});
 });
 
-mainRouter.get(`/search-page`, (req, res) => res.render(`search`));
-
 mainRouter.get(`/search`, async (req, res) => {
   try {
     const {query} = req.query;
     const searchResults = await api.search(query);
     return res.render(`search`, {searchResults, isAfterSearch: true});
   } catch (err) {
-    return res.render(`search`, {isAfterSearch: true});
+    return res.render(`search`, {searchResults: [], isAfterSearch: true});
   }
 });
 

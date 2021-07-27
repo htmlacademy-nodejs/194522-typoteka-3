@@ -10,15 +10,14 @@ block content
       .search-page__wrapper
         h1 Поиск
         .search.search-page__form
-          form(method="get" action="/search")
+          form(action='/search' method='get')
             label
-              input(type="text" placeholder="Что ищем?" name="query")
-            button.search__button.button.button--transparent(type="submit") Найти
-          if isAfterSearch
-            if searchResults
-              each article in searchResults
-                .search__result
-                  time.search__date(datetime='2019-03-21T20:33') #{article.createdDate}
-                  a.search__link #{article.title}
-            else
-              p.search-page__empty Ничего не нашлось
+              input(type='text' name='title' placeholder='Что ищем?')
+            button.search__button.button.button--transparent(type='submit') Найти
+          if searchResults.length
+            each article in searchResults
+              .search__result
+                time.search__date(datetime='2019-03-21T20:33') #{article.createdDate}
+                a.search__link #{article.title}
+          else
+            p.search-page__empty Ничего не нашлось
