@@ -23,4 +23,13 @@ app.use(`/`, mainRoutes);
 app.use(`/my`, myRoutes);
 app.use(`/articles`, articlesRoutes);
 
+app.use((req, res) => {
+  res.render(`errors/404`);
+});
+
+app.use((err, req, res, _next) => {
+  res.status(500).render(`errors/500`);
+});
+
+
 app.listen(DEFAULT_PORT);

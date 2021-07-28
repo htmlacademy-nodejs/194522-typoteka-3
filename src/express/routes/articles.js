@@ -27,7 +27,7 @@ articlesRouter.get(`/add`, async (req, res) => {
   res.render(`new-post`, {categories});
 });
 
-articlesRouter.post(`/add`, upload.single(`cover`), async (req, res) => {
+articlesRouter.post(`/add`, upload.single(`cover`), async (req, res, next) => {
   const {body, file} = req;
   const {announce, categories, fullText, title, date} = body;
   const data = {
@@ -46,18 +46,22 @@ articlesRouter.post(`/add`, upload.single(`cover`), async (req, res) => {
     await api.postArticle(data);
     res.redirect(`/my`);
   } catch (err) {
-    console.error(err);
     res.redirect(`back`);
+    next(err);
   }
 });
 
-articlesRouter.get(`/edit/:id`, async (req, res) => {
+articlesRouter.get(`/edit/:id`, async (req, res, next) => {
   const {id} = req.params;
-  const [article, categories] = await Promise.all([
-    api.getArticle(id),
-    api.getCategories()
-  ]);
-  res.render(`edit-post`, {article, categories});
+  try {
+    const [article, categories] = await Promise.all([
+      api.getArticle(id),
+      api.getCategories()
+    ]);
+    res.render(`edit-post`, {article, categories});
+  } catch (err) {
+    next(err);
+  }
 });
 
 articlesRouter.get(`/category/:id`, (req, res) => res.render(`articles-by-category`));
