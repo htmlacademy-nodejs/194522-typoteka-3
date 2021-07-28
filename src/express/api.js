@@ -38,9 +38,9 @@ class API {
     return this._load(`/categories`);
   }
 
-  search(query) {
+  search(title) {
     return this._load(`/search`, {
-      params: {query}
+      params: {title}
     });
   }
 }

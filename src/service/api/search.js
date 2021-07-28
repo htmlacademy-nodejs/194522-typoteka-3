@@ -3,17 +3,17 @@
 const {Router} = require(`express`);
 const {StatusCode} = require(`../../constants`);
 
-module.exports = (apiRoter, service) => {
+module.exports = (apiRouter, service) => {
   const searchRouter = new Router();
-  apiRoter.use(`/search`, searchRouter);
+  apiRouter.use(`/search`, searchRouter);
 
   searchRouter.get(`/`, (req, res) => {
-    const {query = ``} = req.query;
-    if (!query) {
+    const {title = ``} = req.query;
+    if (!title) {
       return res.status(StatusCode.BAD_REQUEST).json([]);
     }
 
-    const searchResult = service.findAll(query);
+    const searchResult = service.findAll(title);
     const searchStatus = searchResult.length ? StatusCode.OK : StatusCode.NOT_FOUND;
     return res.status(searchStatus).json(searchResult);
   });

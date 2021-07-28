@@ -13,7 +13,7 @@ const mockData = [
       `Вы можете достичь всего. Стоит только немного постараться и запастись книгами`,
       `Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много`,
     ],
-    "category": `Разное`,
+    "categories": [`Разное`],
     "createdDate": 1603419401917,
     "fullText": [
       `Это один из лучших рок-музыкантов`,
@@ -37,7 +37,7 @@ const mockData = [
     "announce": [
       `Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете`,
     ],
-    "category": `Программирование`,
+    "categories": [`Программирование`],
     "createdDate": 1598777410275,
     "fullText": [
       `Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле`
@@ -55,7 +55,7 @@ const mockData = [
     "announce": [
       `Это один из лучших рок-музыкантов`
     ],
-    "category": `Кино`,
+    "categories": [`Кино`],
     "createdDate": 1598355262354,
     "fullText": [
       `Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много`,
@@ -79,16 +79,21 @@ const mockData = [
   }
 ];
 
-const app = express();
-app.use(express.json());
-search(app, new SearchService(mockData));
+const createAPI = () => {
+  const app = express();
+  app.use(express.json());
+  search(app, new SearchService(mockData));
+  return app;
+};
 
 describe(`API correctly handle search route`, () => {
+  let app;
   let response;
 
   beforeAll(async () => {
+    app = createAPI();
     response = await request(app).get(`/search`).query({
-      query: `достигнуть`
+      title: `достигнуть`
     });
   });
 
@@ -101,17 +106,19 @@ describe(`API correctly handle search route`, () => {
   test(`One article found`, () => expect(response.body.length).toBe(1));
 });
 
-test(`API returns code 404 if nothing is found`, () => {
-  request(app)
+test(`API returns code 404 if nothing is found`, async () => {
+  const app = createAPI();
+  await request(app)
     .get(`/search`)
     .query({
-      query: `Asdf`
+      title: `Asdf`
     })
     .expect(StatusCode.NOT_FOUND);
 });
 
-test(`API returns 400 without query string`, () => {
-  request(app)
+test(`API returns 400 without query string`, async () => {
+  const app = createAPI();
+  await request(app)
     .get(`/search`)
     .expect(StatusCode.BAD_REQUEST);
 });

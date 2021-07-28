@@ -11,12 +11,12 @@ mainRouter.get(`/`, async (req, res) => {
 });
 
 mainRouter.get(`/search`, async (req, res) => {
+  const {title} = req.query;
   try {
-    const {query} = req.query;
-    const searchResults = await api.search(query);
-    return res.render(`search`, {searchResults, isAfterSearch: true});
+    const searchResults = await api.search(title);
+    return res.render(`search`, {searchingTitle: title, searchResults});
   } catch (err) {
-    return res.render(`search`, {searchResults: [], isAfterSearch: true});
+    return res.render(`search`, {searchingTitle: title, searchResults: []});
   }
 });
 
