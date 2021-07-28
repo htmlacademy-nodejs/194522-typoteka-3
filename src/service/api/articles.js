@@ -25,7 +25,7 @@ module.exports = (apiRouter, articleService, commentService) => {
     res.status(StatusCode.CREATED).json(newPost);
   });
 
-  articlesRouter.put(`/:articleId`, articleExist(articleService), (req, res) => {
+  articlesRouter.put(`/:articleId`, [articleExist(articleService), articleValidator], (req, res) => {
     const {articleId} = req.params;
     const updatedArticle = articleService.update(articleId, req.body);
     return res.status(StatusCode.OK).json(updatedArticle);

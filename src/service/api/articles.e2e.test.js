@@ -13,7 +13,7 @@ const mockData = [
       `Вы можете достичь всего. Стоит только немного постараться и запастись книгами`,
       `Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много`,
     ],
-    "category": `Разное`,
+    "categories": [`Разное`],
     "createdDate": 1603419401917,
     "fullText": [
       `Это один из лучших рок-музыкантов`,
@@ -37,7 +37,7 @@ const mockData = [
     "announce": [
       `Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете`,
     ],
-    "category": `Программирование`,
+    "categories": [`Программирование`],
     "createdDate": 1598777410275,
     "fullText": [
       `Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле`
@@ -55,7 +55,7 @@ const mockData = [
     "announce": [
       `Это один из лучших рок-музыкантов`
     ],
-    "category": `Кино`,
+    "categories": [`Кино`],
     "createdDate": 1598355262354,
     "fullText": [
       `Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много`,
@@ -89,8 +89,11 @@ const createApp = () => {
 
 describe(`API returns articles`, () => {
   let response;
+  let app;
+
   beforeAll(async () => {
-    response = await request(createApp()).get(`/articles`);
+    app = createApp();
+    response = await request(app).get(`/articles`);
   });
 
   test(`Returns status code 200`, () => {
@@ -108,8 +111,11 @@ describe(`API returns articles`, () => {
 
 describe(`API works correctly with requesting article by id`, () => {
   let response;
+  let app;
+
   beforeAll(async () => {
-    response = await request(createApp()).get(`/articles/zhG-y`);
+    app = createApp();
+    response = await request(app).get(`/articles/zhG-y`);
   });
 
   test(`Returns status 200`, () => {
@@ -121,23 +127,25 @@ describe(`API works correctly with requesting article by id`, () => {
   });
 });
 
-test(`Returns 404 for non-existing article`, async () => {
-  const response = await request(createApp()).get(`/articles/asdf`, () => {
-    expect(response.statusCode).toBe(StatusCode.NOT_FOUND);
-  });
+test(`Returns 404 for requesting non-existing article`, async () => {
+  const app = createApp();
+  const response = await request(app).get(`/articles/non-existing-id`);
+  expect(response.statusCode).toBe(StatusCode.NOT_FOUND);
 });
 
 describe(`API works correctly with posting valid article`, () => {
-  const app = createApp();
+  let app;
   let response;
+
   const newArticle = {
     announce: `test announce`,
-    category: `test category`,
+    categories: [`test category`],
     fullText: `full mock text`,
     title: `test title`,
   };
 
   beforeAll(async () => {
+    app = createApp();
     response = await request(app).post(`/articles`).send(newArticle);
   });
 
@@ -149,8 +157,8 @@ describe(`API works correctly with posting valid article`, () => {
     expect(response.body).toEqual(expect.objectContaining(newArticle));
   });
 
-  test(`Articles quantity increases by 1`, () => {
-    request(app).get(`/articles`).expect((res) => expect(res.body.length).toBe(4));
+  test(`Articles quantity increases by 1`, async () => {
+    await request(app).get(`/articles`).expect((res) => expect(res.body.length).toBe(4));
   });
 });
 
@@ -166,14 +174,19 @@ describe(`API refuses to create new article if data is invalid`, () => {
 });
 
 describe(`API changes existing article`, () => {
+  const UPDATED_ID = `zhG-y`;
   let response;
-  const updatedData = {
+  let app;
+
+  const initDataItem = mockData.find((item) => item.id === UPDATED_ID);
+  const updatedData = Object.assign({}, initDataItem, {
     title: `new test title`,
-    category: `updated category`
-  };
+    categories: [`updated category`],
+  });
 
   beforeAll(async () => {
-    response = await request(createApp()).put(`/articles/zhG-y`).send(updatedData);
+    app = createApp();
+    response = await request(app).put(`/articles/${UPDATED_ID}`).send(updatedData);
   });
 
   test(`Returns status 200`, () => {
@@ -186,29 +199,30 @@ describe(`API changes existing article`, () => {
 
   test(`Article category and title are changed`, () => {
     expect(response.body.title).toBe(`new test title`);
-    expect(response.body.category).toBe(`updated category`);
+    expect(response.body.categories).toContain(`updated category`);
   });
 });
 
-test(`Returns 404 for trying to change non-existent article`, () => {
+test(`Returns 404 for trying to change non-existent article`, async () => {
   const newArticle = {
     announce: `test announce`,
-    category: `test category`,
+    categories: [`test category`],
     fullText: `full mock text`,
     title: `test title`,
   };
 
-  return request(createApp())
+  await request(createApp())
     .put(`/articles/asdf`)
     .send(newArticle)
     .expect(StatusCode.NOT_FOUND);
 });
 
 describe(`API correctly delete article`, () => {
-  const app = createApp();
+  let app;
   let response;
 
   beforeAll(async () => {
+    app = createApp();
     response = await request(app).delete(`/articles/zhG-y`);
   });
 
@@ -216,24 +230,25 @@ describe(`API correctly delete article`, () => {
 
   test(`Returns deleted article`, () => expect(response.body.id).toBe(`zhG-y`));
 
-  test(`Article count decreased by 1`, () => request(app)
+  test(`Article count decreased by 1`, async () => await request(app)
     .get(`/articles`)
     .expect((res) => expect(res.body.length).toBe(2))
   );
 });
 
-test(`API refuses to delete non-existent article`, () => {
+test(`API refuses to delete non-existent article`, async () => {
   const app = createApp();
-  return request(app)
+  await request(app)
     .delete(`/article/asdf`)
     .expect(StatusCode.NOT_FOUND);
 });
 
 describe(`API returns comments for requested article`, () => {
-  const app = createApp();
+  let app;
   let response;
 
   beforeAll(async () => {
+    app = createApp();
     response = await request(app).get(`/articles/zhG-y/comments`);
   });
 
@@ -243,14 +258,15 @@ describe(`API returns comments for requested article`, () => {
 });
 
 describe(`API creates a comment if data is valid`, () => {
-  const app = createApp();
+  let app;
+  let response;
+
   const newComment = {
     text: `Валидному комментарию достаточно этого поля`
   };
 
-  let response;
-
   beforeAll(async () => {
+    app = createApp();
     response = await request(app)
       .post(`/articles/zhG-y/comments`)
       .send(newComment);
@@ -264,9 +280,9 @@ describe(`API creates a comment if data is valid`, () => {
   );
 });
 
-test(`API refuses to create a comment to non-existent article and returns status code 404`, () => {
+test(`API refuses to create a comment to non-existent article and returns status code 404`, async () => {
   const app = createApp();
-  return request(app)
+  await request(app)
     .post(`/articles/NOEXST/comments`)
     .send({
       text: `test`
@@ -274,19 +290,20 @@ test(`API refuses to create a comment to non-existent article and returns status
     .expect(StatusCode.NOT_FOUND);
 });
 
-test(`API refuses to create a comment when data is invalid, and returns status code 400`, () => {
+test(`API refuses to create a comment when data is invalid, and returns status code 400`, async () => {
   const app = createApp();
-  return request(app)
+  await request(app)
     .post(`/articles/zhG-y/comments`)
     .send({})
     .expect(StatusCode.BAD_REQUEST);
 });
 
 describe(`API correctly deletes a comment`, () => {
-  const app = createApp();
+  let app;
   let response;
 
   beforeAll(async () => {
+    app = createApp();
     response = await request(app)
       .delete(`/articles/zhG-y/comments/ORk_E`);
   });
@@ -299,16 +316,16 @@ describe(`API correctly deletes a comment`, () => {
   );
 });
 
-test(`API refuses to delete non-existent comment`, () => {
+test(`API refuses to delete non-existent comment`, async () => {
   const app = createApp();
-  return request(app)
+  await request(app)
     .delete(`/articles/zhG-y/comments/NOEXST`)
     .expect(StatusCode.NOT_FOUND);
 });
 
-test(`API refuses to delete a comment to non-existent offer`, () => {
+test(`API refuses to delete a comment to non-existent offer`, async () => {
   const app = createApp();
-  return request(app)
+  await request(app)
     .delete(`/offers/NOEXST/comments/ORk_E`)
     .expect(StatusCode.NOT_FOUND);
 });
