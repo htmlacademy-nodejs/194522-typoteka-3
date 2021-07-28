@@ -13,7 +13,7 @@ const mockData = [
       `Вы можете достичь всего. Стоит только немного постараться и запастись книгами`,
       `Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много`,
     ],
-    "category": `Разное`,
+    "categories": [`Разное`],
     "createdDate": 1603419401917,
     "fullText": [
       `Это один из лучших рок-музыкантов`,
@@ -37,7 +37,7 @@ const mockData = [
     "announce": [
       `Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете`,
     ],
-    "category": `Программирование`,
+    "categories": [`Программирование`],
     "createdDate": 1598777410275,
     "fullText": [
       `Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле`
@@ -55,7 +55,7 @@ const mockData = [
     "announce": [
       `Это один из лучших рок-музыкантов`
     ],
-    "category": `Кино`,
+    "categories": [`Кино`],
     "createdDate": 1598355262354,
     "fullText": [
       `Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много`,
@@ -79,13 +79,19 @@ const mockData = [
   }
 ];
 
-const app = express();
-app.use(express.json());
-categories(app, new CategoriesService(mockData));
+const createAPI = () => {
+  const app = express();
+  app.use(express.json());
+  categories(app, new CategoriesService(mockData));
+  return app;
+};
 
 describe(`API returns categories`, () => {
+  let app;
   let response;
+
   beforeAll(async () => {
+    app = createAPI();
     response = await request(app).get(`/categories`);
   });
 
