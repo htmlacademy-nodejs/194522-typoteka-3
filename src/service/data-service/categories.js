@@ -7,7 +7,7 @@ class CategoriesService {
 
   findAll() {
     const categories = this._articles.reduce((acc, article) => {
-      acc.add(...article.category);
+      acc.add(...article.categories);
       return acc;
     }, new Set());
 

@@ -58,7 +58,7 @@ const generateArticles = (quantity, titles, texts, categories, comments) => {
   return Array(quantity).fill({}).map(() => ({
     id: nanoid(MAX_ID_LENGTH),
     announce: getRandomArrayElements(getRandomInt(AnnounceLength.MIN, AnnounceLength.MAX), texts).join(`. `),
-    category: [categories[getRandomInt(0, categories.length - 1)]],
+    categories: [categories[getRandomInt(0, categories.length - 1)]],
     createdDate: (getRandomInt(DatesLimit.MIN, DatesLimit.MAX)),
     fullText: getRandomArrayElements(getRandomInt(FullTextLength.MIN, FullTextLength.MAX), texts).join(`. `),
     title: getRandomArrayElement(titles),

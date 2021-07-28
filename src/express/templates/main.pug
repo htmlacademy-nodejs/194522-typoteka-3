@@ -97,7 +97,7 @@ block content
         each article in articles
           li.preview__item
             ul.preview__breadcrumbs
-              each category in article.category
+              each category in article.categories
                 li.preview__breadcrumbs-item
                   a.preview__breadcrumbs-link(href='#') #{category}
             if article.image

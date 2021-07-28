@@ -29,10 +29,10 @@ articlesRouter.get(`/add`, async (req, res) => {
 
 articlesRouter.post(`/add`, upload.single(`cover`), async (req, res) => {
   const {body, file} = req;
-  const {announce, category, fullText, title, date} = body;
+  const {announce, categories, fullText, title, date} = body;
   const data = {
     announce,
-    category,
+    categories,
     date,
     fullText,
     title,
