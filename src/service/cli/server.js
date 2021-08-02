@@ -22,12 +22,21 @@ const logger = getLogger({name: `api`});
 
 module.exports = {
   name: `--server`,
-  run(args) {
+  async run(args) {
     const [userPort] = args;
     const port = parseInt(userPort, 10) || DEFAULT_PORT;
     const app = express();
 
-    const apiRouter = new express.Router();
+    const getApiRouter = async () => {
+      const apiRouter = new express.Router();
+      const mockData = await getMockData();
+      getArticlesRouter(apiRouter, new ArticlesService(mockData), new CommentsService());
+      getCategoriesRouter(apiRouter, new CategoriesService(mockData));
+      getSearchRouter(apiRouter, new SearchService(mockData));
+      return apiRouter;
+    };
+
+    const apiRouter = await getApiRouter();
 
     app.use(express.json());
 
@@ -39,12 +48,7 @@ module.exports = {
       next();
     });
 
-    app.use(API_PREFIX, async () => {
-      const mockData = await getMockData();
-      getArticlesRouter(apiRouter, new ArticlesService(mockData), new CommentsService());
-      getCategoriesRouter(apiRouter, new CategoriesService(mockData));
-      getSearchRouter(apiRouter, new SearchService(mockData));
-    });
+    app.use(API_PREFIX, apiRouter);
 
     app.use((req, res) => {
       res.status(StatusCode.NOT_FOUND).send(NOT_FOUND_MESSAGE);
