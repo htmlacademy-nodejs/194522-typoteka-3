@@ -5,7 +5,7 @@ const chalk = require(`chalk`);
 const {generateDbData} = require(`./generate-mock-data`);
 
 const DEFAULT_MOCKS_QUANTITY = 1;
-const FILL_DB_FILE = `auto-fill-db.sql`;
+const FILL_DB_FILE = `fill-db.sql`;
 
 const joinObjectValuesInInsertString = (obj, keysToInclude = [], numTypeFields) => {
   return keysToInclude.reduce((sum, current, index) => {
@@ -33,7 +33,7 @@ const Fields = {
 };
 
 module.exports = {
-  name: `--filldb`,
+  name: `--fill`,
   async run(args) {
     const [userMocksQuantity] = args;
     const articlesCount = parseInt(userMocksQuantity, 10) || DEFAULT_MOCKS_QUANTITY;
