@@ -2,7 +2,18 @@
 
 const express = require(`express`);
 const {StatusCode, API_PREFIX} = require(`../../constants`);
-const apiRouter = require(`../api/`);
+const {
+  getArticlesRouter,
+  getCategoriesRouter,
+  getSearchRouter,
+} = require(`../api`);
+const {
+  ArticlesService,
+  CategoriesService,
+  CommentsService,
+  SearchService
+} = require(`../data-service`);
+const getMockData = require(`../lib/get-mock-data`);
 const {getLogger} = require(`../lib/logger`);
 
 const DEFAULT_PORT = 3000;
@@ -16,6 +27,8 @@ module.exports = {
     const port = parseInt(userPort, 10) || DEFAULT_PORT;
     const app = express();
 
+    const apiRouter = new express.Router();
+
     app.use(express.json());
 
     app.use((req, res, next) => {
@@ -26,7 +39,12 @@ module.exports = {
       next();
     });
 
-    app.use(API_PREFIX, apiRouter);
+    app.use(API_PREFIX, async () => {
+      const mockData = await getMockData();
+      getArticlesRouter(apiRouter, new ArticlesService(mockData), new CommentsService());
+      getCategoriesRouter(apiRouter, new CategoriesService(mockData));
+      getSearchRouter(apiRouter, new SearchService(mockData));
+    });
 
     app.use((req, res) => {
       res.status(StatusCode.NOT_FOUND).send(NOT_FOUND_MESSAGE);
