@@ -2,17 +2,7 @@
 
 const express = require(`express`);
 const {StatusCode, API_PREFIX} = require(`../../constants`);
-const {
-  getArticlesRouter,
-  getCategoriesRouter,
-  getSearchRouter,
-} = require(`../api`);
-const {
-  ArticlesService,
-  CategoriesService,
-  CommentsService,
-  SearchService
-} = require(`../data-service`);
+const api = require(`../api`);
 const getMockData = require(`../lib/get-mock-data`);
 const {getLogger} = require(`../lib/logger`);
 
@@ -26,17 +16,8 @@ module.exports = {
     const [userPort] = args;
     const port = parseInt(userPort, 10) || DEFAULT_PORT;
     const app = express();
-
-    const getApiRouter = async () => {
-      const apiRouter = new express.Router();
-      const mockData = await getMockData();
-      getArticlesRouter(apiRouter, new ArticlesService(mockData), new CommentsService());
-      getCategoriesRouter(apiRouter, new CategoriesService(mockData));
-      getSearchRouter(apiRouter, new SearchService(mockData));
-      return apiRouter;
-    };
-
-    const apiRouter = await getApiRouter();
+    const mockData = await getMockData();
+    const apiRouter = api(mockData);
 
     app.use(express.json());
 
