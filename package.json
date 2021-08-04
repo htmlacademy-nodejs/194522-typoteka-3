@@ -8,9 +8,9 @@
     "jest": "jest",
     "test::rest": "jest src/service/api/*.test.js",
     "eslint": "eslint --ext .js src/",
-    "start": "cross-env NODE_ENV=production node ./src/service/service.js",
-    "start::dev": "cross-env NODE_ENV=development nodemon ./src/service/service.js",
-    "start::debug": "cross-env NODE_ENV=development LOG_LEVEL=debug nodemon ./src/service/service.js",
+    "start": "cross-env NODE_ENV=production node -r dotenv/config ./src/service/service.js",
+    "start::dev": "cross-env NODE_ENV=development nodemon -r dotenv/config ./src/service/service.js",
+    "start::debug": "cross-env NODE_ENV=development LOG_LEVEL=debug nodemon -r dotenv/config ./src/service/service.js",
     "start-front-server": "nodemon ./src/express/index.js"
   },
   "repository": {
@@ -35,11 +35,14 @@
     "axios": "0.21.0",
     "chalk": "3.0.0",
     "cross-env": "7.0.2",
+    "dotenv": "10.0.0",
     "express": "4.17.1",
     "multer": "1.4.2",
     "nanoid": "3.1.16",
+    "pg": "8.7.1",
     "pino": "6.7.0",
-    "pug": "2.0.4"
+    "pug": "2.0.4",
+    "sequelize": "6.6.5"
   },
   "engines": {
     "node": ">=12.14.1"

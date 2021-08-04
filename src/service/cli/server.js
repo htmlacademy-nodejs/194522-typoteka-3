@@ -4,6 +4,8 @@ const express = require(`express`);
 const {StatusCode, API_PREFIX} = require(`../../constants`);
 const api = require(`../api`);
 const getMockData = require(`../lib/get-mock-data`);
+const connectDb = require(`../lib/connect-db`);
+const sequelize = require(`../lib/sequelize`);
 const {getLogger} = require(`../lib/logger`);
 
 const DEFAULT_PORT = 3000;
@@ -13,6 +15,7 @@ const logger = getLogger({name: `api`});
 module.exports = {
   name: `--server`,
   async run(args) {
+    await connectDb(sequelize);
     const [userPort] = args;
     const port = parseInt(userPort, 10) || DEFAULT_PORT;
     const app = express();
@@ -42,9 +45,9 @@ module.exports = {
 
     app.listen(port, (err) => {
       if (err) {
-        return logger.error(`Ошибка при создании сервера: ${err}`);
+        return logger.error(`Unable to connect to the server: ${err}`);
       }
-      return logger.info(`Сервер запущен на ${port}`);
+      return logger.info(`Server is running on port ${port}`);
     });
   }
 };

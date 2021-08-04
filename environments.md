@@ -1,0 +1,7 @@
+## СУБД
+
+DB_HOST
+DB_PORT
+DB_USER
+DB_NAME
+DB_PASSWORD
