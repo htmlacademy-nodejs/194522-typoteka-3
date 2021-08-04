@@ -9,7 +9,7 @@ RIGHT JOIN articles_categories ON categories.id = articles_categories.category_i
 -- Получить список категорий с количеством публикаций (идентификатор, наименование категории, количество публикаций в категории);
 SELECT categories.id, categories.name, count(articles_categories.article_id)
 FROM categories
-JOIN articles_categories ON categories.id = articles_categories.category_id
+LEFT JOIN articles_categories ON categories.id = articles_categories.category_id
 GROUP BY categories.id
 
 -- Получить список публикаций (идентификатор публикации, заголовок публикации, анонс публикации, дата публикации, имя и фамилия автора, контактный email, количество комментариев, наименование категорий). Сначала свежие публикации;
@@ -21,7 +21,7 @@ SELECT
   users.first_name,
   users.last_name,
   users.email,
-  count(comments.id),
+  count(DISTINCT comments.id),
   STRING_AGG(DISTINCT categories.name, ', ')
 FROM articles
 LEFT JOIN users ON articles.user_id = users.id
@@ -42,7 +42,7 @@ SELECT
   users.first_name,
   users.last_name,
   users.email,
-  count(comments.id),
+  count(DISTINCT comments.id),
   STRING_AGG(DISTINCT categories.name, ', ')
 FROM articles
 LEFT JOIN users ON users.id = articles.user_id
