@@ -1,5 +1,5 @@
 'use strict';
 
-const defineRoutes = require(`./defineRoutes`);
+const defineRoutes = require(`./define-routes`);
 
 module.exports = defineRoutes;
