@@ -3,7 +3,7 @@
 const request = require(`supertest`);
 const express = require(`express`);
 const categories = require(`./categories`);
-const {CategoriesService} = require(`../data-service`);
+const {CategoryService} = require(`../data-service`);
 const {StatusCode} = require(`../../constants`);
 
 const mockData = [
@@ -82,7 +82,7 @@ const mockData = [
 const createAPI = () => {
   const app = express();
   app.use(express.json());
-  categories(app, new CategoriesService(mockData));
+  categories(app, new CategoryService(mockData));
   return app;
 };
 
