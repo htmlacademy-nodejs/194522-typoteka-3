@@ -21,15 +21,15 @@ const joinObjectValuesInInsertString = (obj, keysToInclude = [], numTypeFields) 
 };
 
 const getValuesString = (arr, fields) => arr.map((item) => {
-  const numTypes = [`user_id`, `article_id`, `category_id`];
+  const numTypes = [`userId`, `articleId`, `categoryId`];
   return joinObjectValuesInInsertString(item, fields, numTypes);
 }).join(`,\n`);
 
 const Fields = {
-  Article: [`title`, `announce`, `text`, `image`, `user_id`],
-  User: [`email`, `password_hash`, `first_name`, `last_name`, `avatar`],
-  ArticlesCategories: [`article_id`, `category_id`],
-  Comment: [`text`, `user_id`, `article_id`]
+  Article: [`title`, `announce`, `text`, `image`, `userId`],
+  User: [`email`, `passwordHash`, `firstName`, `lastName`, `avatar`],
+  ArticlesCategories: [`articleId`, `categoryId`],
+  Comment: [`text`, `userId`, `articleId`]
 };
 
 module.exports = {
@@ -46,8 +46,8 @@ module.exports = {
       } = await generateDbData(articlesCount);
 
       const articlesCategories = articles.map((article, i) => ({
-        [`article_id`]: i + 1,
-        [`category_id`]: article.categories[0]
+        [`articleId`]: i + 1,
+        [`categoryId`]: article.categories[0]
       }));
       const comments = articles.flatMap((article) => article.comments);
       const categoriesValues = categories.map((category) => `('${category}')`).join(`,\n`);
@@ -76,8 +76,7 @@ module.exports = {
       await fs.writeFile(FILL_DB_FILE, fillDbFileContent);
       console.info(chalk.green(`Operation success. File created.`));
     } catch (err) {
-      console.error(chalk.red(err));
-      console.error(chalk.red(`Can't write data to file...`));
+      console.error(chalk.red(`Can't write data to file: ${err}`));
     }
   }
 };

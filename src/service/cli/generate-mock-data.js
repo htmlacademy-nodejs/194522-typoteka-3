@@ -36,16 +36,16 @@ const CommentLength = {
 const mockUsers = [
   {
     email: `ivanov@example.com`,
-    [`password_hash`]: `123456`,
-    [`first_name`]: `Иван`,
-    [`last_name`]: `Иванов`,
+    passwordHash: `123456`,
+    firstName: `Иван`,
+    lastName: `Иванов`,
     avatar: `avatar-1.jpg`
   },
   {
     email: `petrov@example.com`,
-    [`password_hash`]: `123456`,
-    [`first_name`]: `Пётр`,
-    [`last_name`]: `Петров`,
+    passwordHash: `123456`,
+    firstName: `Пётр`,
+    lastName: `Петров`,
     avatar: `avatar-2.jpg`
   }
 ];
@@ -70,14 +70,14 @@ const generateComments = (commentsSamples, isAllFields, articleElementIndex) => 
   const commentsCount = getRandomInt(commentsQuantity.MIN, commentsQuantity.MAX);
   return Array(commentsCount).fill({}).map(() => ({
     text: (getRandomArrayElements(getRandomInt(CommentLength.MIN, CommentLength.MAX), commentsSamples)).join(`. `),
-    [`user_id`]: getRandomInt(1, mockUsers.length),
-    [`article_id`]: articleElementIndex + 1,
+    userId: getRandomInt(1, mockUsers.length),
+    articleId: articleElementIndex + 1,
     ...(isAllFields && {id: nanoid(MAX_ID_LENGTH)}),
     ...(isAllFields && addDateField()),
   }));
 };
 
-const addDateField = () => ({[`created_at`]: (getRandomInt(DatesLimit.MIN, DatesLimit.MAX))});
+const addDateField = () => ({createdAt: (getRandomInt(DatesLimit.MIN, DatesLimit.MAX))});
 
 const generate = async (count, {isAllFields}) => {
   if (count > MAX_MOCKS_QUANTITY) {
@@ -95,7 +95,7 @@ const generate = async (count, {isAllFields}) => {
 
     const articles = Array(count).fill({}).map((_el, articleElementIndex) => {
       return {
-        [`user_id`]: getRandomInt(1, mockUsers.length),
+        userId: getRandomInt(1, mockUsers.length),
         announce: getRandomArrayElement(texts),
         categories: [getRandomInt(1, categories.length)],
         text: getRandomArrayElements(getRandomInt(FullTextLength.MIN, FullTextLength.MAX), texts).join(`. `),
