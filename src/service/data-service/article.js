@@ -1,6 +1,5 @@
 'use strict';
 
-
 const Sequelize = require(`sequelize`);
 const {Op} = require(`sequelize`);
 const Aliase = require(`../models/aliase`);
@@ -48,8 +47,10 @@ class ArticleService {
     return articles.map((article) => article.get());
   }
 
-  async findAllByCategory(categoryId) {
-    const articles = await this._Article.findAll({
+  async findPageByCategory({limit, offset, categoryId}) {
+    const {count, rows} = await this._Article.findAndCountAll({
+      limit,
+      offset,
       include: [
         Aliase.COMMENTS,
         {
@@ -57,9 +58,10 @@ class ArticleService {
           as: Aliase.CATEGORIES,
           where: {id: categoryId}
         }
-      ]
+      ],
+      distinct: true
     });
-    return articles;
+    return {count, articles: rows};
   }
 
   async findOne(id) {
@@ -77,6 +79,16 @@ class ArticleService {
       ]
     });
     return article;
+  }
+
+  async findPage({limit, offset}) {
+    const {count, rows} = await this._Article.findAndCountAll({
+      limit,
+      offset,
+      include: [Aliase.CATEGORIES, Aliase.COMMENTS],
+      distinct: true
+    });
+    return {count, articles: rows};
   }
 
   async create(articleData) {

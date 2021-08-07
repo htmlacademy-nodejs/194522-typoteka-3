@@ -23,6 +23,16 @@ class API {
     return this._load(`/articles`);
   }
 
+  getLimitedArticles({limit, offset}) {
+    return this._load(`/articles`, {
+      params: {
+        isPage: true,
+        limit,
+        offset
+      }
+    });
+  }
+
   getMostCommentedArticles(limit) {
     return this._load(`/articles`, {
       params: {
@@ -32,8 +42,10 @@ class API {
     });
   }
 
-  getArticlesByCategory(categoryId) {
-    return this._load(`/articles/category/${categoryId}`);
+  getLimitedArticlesByCategory({categoryId, limit, offset}) {
+    return this._load(`/articles/category/${categoryId}`, {
+      params: {limit, offset}
+    });
   }
 
   getArticle(id) {

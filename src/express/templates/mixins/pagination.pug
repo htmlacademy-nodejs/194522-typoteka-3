@@ -1,0 +1,33 @@
+mixin pagination(totalCount, currentPage, sideLimit)
+  -
+    const pagesAfterCurrent = [];
+    const pagesFromCurrentToBegining = [];
+    const isMoreThanLimitToBegining = (currentPage - sideLimit) > 1;
+    const isMoreThanLimitToEnd = (totalCount - currentPage) > sideLimit;
+
+    for (let i = currentPage - 1; i > 0 && pagesFromCurrentToBegining.length < sideLimit; i--) {
+      pagesFromCurrentToBegining.push(i);
+    }
+
+    for (let i = currentPage + 1; i <= totalCount && pagesAfterCurrent.length < sideLimit; i++) {
+      pagesAfterCurrent.push(i);
+    }
+
+    const pagesBeforeCurrent = [...pagesFromCurrentToBegining.reverse()];
+
+  .preview__toggle-wrapper
+    ul.preview__pagination.pagination
+      if isMoreThanLimitToBegining
+        li
+          a.pagination__button.button.button--backwards(href='/?page=1' aria-label='Страница назад') Назад
+      each pageBeforeCurrent in pagesBeforeCurrent
+        li.pagination__item
+          a(href=`?page=${pageBeforeCurrent}`) #{pageBeforeCurrent}
+      li.pagination__item.pagination__item--active
+        a(href=`/?page=${currentPage}`) #{currentPage}
+      each pageAfterCurrent in pagesAfterCurrent
+        li.pagination__item
+          a(href=`?page=${pageAfterCurrent}`) #{pageAfterCurrent}
+      if isMoreThanLimitToEnd
+        li
+          a.pagination__button.button.button--forward(href=`/?page=${totalCount}` aria-label='Страница вперед') Вперед

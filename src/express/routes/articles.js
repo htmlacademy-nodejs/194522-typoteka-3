@@ -4,6 +4,7 @@ const {Router} = require(`express`);
 const {createStorage, ensureArray} = require(`../../utils`);
 const {nanoid} = require(`nanoid`);
 const path = require(`path`);
+const {ARTICLES_PER_PAGE} = require(`../../constants`);
 const api = require(`../api`).getAPI();
 
 const articlesRouter = new Router();
@@ -34,20 +35,30 @@ articlesRouter.get(`/edit/:id`, async (req, res, next) => {
 
 articlesRouter.get(`/category/:id`, async (req, res) => {
   const categoryId = req.params.id;
+  const page = +req.query.page || 1;
   const [
-    articles,
+    {count, articles},
     countedCategories,
     category
   ] = await Promise.all([
-    api.getArticlesByCategory(categoryId),
+    api.getLimitedArticlesByCategory({
+      categoryId,
+      limit: ARTICLES_PER_PAGE,
+      offset: (page - 1) * ARTICLES_PER_PAGE
+    }),
     api.getCountedCategories(),
     api.getCategory(categoryId)
   ]);
+
+  const totalPagesCount = Math.ceil(count / ARTICLES_PER_PAGE);
+
   res.render(`articles-by-category`, {
     articles,
     countedCategories,
     categoryName: category.name,
-    selectedCategoryId: category.id
+    selectedCategoryId: category.id,
+    currentPage: page,
+    totalPagesCount
   });
 });
 

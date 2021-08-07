@@ -12,11 +12,14 @@ module.exports = (apiRouter, articleService, commentService) => {
   apiRouter.use(`/articles`, articlesRouter);
 
   articlesRouter.get(`/`, async (req, res) => {
-    const {isMostCommented, limit} = req.query;
-
+    const {isMostCommented, isPage, limit, offset} = req.query;
     if (isMostCommented) {
       const articles = await articleService.findMostCommented(limit);
       return res.status(StatusCode.OK).json(articles);
+    }
+    if (isPage) {
+      const pageData = await articleService.findPage({limit, offset});
+      return res.status(StatusCode.OK).json(pageData);
     }
 
     const articles = await articleService.findAll();
@@ -29,8 +32,13 @@ module.exports = (apiRouter, articleService, commentService) => {
   });
 
   articlesRouter.get(`/category/:categoryId`, async (req, res) => {
-    const articles = await articleService.findAllByCategory(req.params.categoryId);
-    res.status(StatusCode.OK).json(articles);
+    const {limit, offset} = req.query;
+    const pageData = await articleService.findPageByCategory({
+      categoryId: req.params.categoryId,
+      limit,
+      offset
+    });
+    res.status(StatusCode.OK).json(pageData);
   });
 
   articlesRouter.post(`/`, articleValidator, async (req, res) => {

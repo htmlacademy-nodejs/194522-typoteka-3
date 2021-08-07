@@ -1,6 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
+const {ARTICLES_PER_PAGE} = require(`../../constants`);
 const api = require(`../api`).getAPI();
 
 const mainRouter = new Router();
@@ -9,22 +10,31 @@ const MOST_COMMENTED_ITEMS_QUANTITY = 4;
 const COMMENTS_QUANTITY = 4;
 
 mainRouter.get(`/`, async (req, res) => {
+  const page = +req.query.page || 1;
   const [
-    articles,
+    {count, articles},
     countedCategories,
     mostCommentedArticles,
     comments
   ] = await Promise.all([
-    api.getArticles(),
+    api.getLimitedArticles({
+      limit: ARTICLES_PER_PAGE,
+      offset: (page - 1) * ARTICLES_PER_PAGE
+    }),
     api.getCountedCategories(),
     api.getMostCommentedArticles(MOST_COMMENTED_ITEMS_QUANTITY),
     api.getComments({limit: COMMENTS_QUANTITY})
   ]);
+
+  const totalPagesCount = Math.ceil(count / ARTICLES_PER_PAGE);
+
   res.render(`main`, {
     articles,
     countedCategories,
     mostCommentedArticles,
-    comments
+    comments,
+    totalPagesCount,
+    currentPage: page
   });
 });
 
