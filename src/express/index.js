@@ -19,6 +19,8 @@ app.set(`views`, path.resolve(__dirname, TEMPLATES_DIR));
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 app.use(express.static(path.resolve(__dirname, UPLOAD_DIR)));
 
+app.use(express.urlencoded({extended: false}));
+
 app.use(`/`, mainRoutes);
 app.use(`/my`, myRoutes);
 app.use(`/articles`, articlesRoutes);

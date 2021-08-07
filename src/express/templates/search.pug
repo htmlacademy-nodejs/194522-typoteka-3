@@ -5,11 +5,6 @@ block vars
   - var isAdmin=true
   - var searchPageClassName = 'search-page__wrapper'
   - var searchPageEmptyClassName = 'search-page__wrapper search-page__wrapper--empty'
-  -
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      return date.toLocaleString();
-    }
 
 block content
   main
@@ -24,7 +19,7 @@ block content
           if searchResults.length
             each article in searchResults
               .search__result
-                time.search__date(datetime=article.createdDate) #{formatDate(article.createdDate)}
-                a.search__link #{article.title}
+                +dateTime(article.createdDate)(class='search__date')
+                a.search__link(href=`/articles/${article.id}`) #{article.title}
           else if searchingTitle && !searchResults.length
             p.search-page__empty Ничего не нашлось

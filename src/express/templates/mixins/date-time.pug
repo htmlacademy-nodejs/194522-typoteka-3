@@ -1,0 +1,8 @@
+mixin dateTime(date)
+  -
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return date.toLocaleString();
+    }
+
+  time(class=attributes.class dateTime=date) #{formatDate(date)}

@@ -9,25 +9,15 @@ block content
     section.main-page__publication.publication
       h1.publication__title Комментарии
       ul.publication__list
-        each article in articles
+        each comment in comments
           li.publication__list-item
             .publication__header
-              img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-              b.publication__list-name Александр Петров
-              time.publication__item-time(datetime='2019-03-21T20:33') #{article.createdDate}
-            a.publication__item-text(href='#')
-              | #{article.title}
+              img.publication__list-image(src=`/img/${comment.user.avatar}` width='20' height='20' alt='Аватар пользователя')
+              b.publication__list-name #{comment.user.firstName} #{comment.user.lastName}
+              +dateTime(comment.createdAt)(class=`comments__date`)
+            a.publication__item-text(href=`/articles/${comment.articleId}`)
+              | #{comment.text}
             p.publication__text-strong
-              | #{article.announce}
+              | #{comment.article.title}
             button.publication__button.button.button--close-item(type='button')
               span.visually-hidden Закрыть строку списка
-            ul.comments__list
-              each comment in article.comments
-                li.comments__comment
-                  .comments__avatar.avatar
-                    img(src='/img/avatar-1.png' alt='аватар пользователя')
-                  .comments__text
-                    .comments__head
-                      p Евгений Петров •
-                      time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-                    p.comments__message #{comment.text}

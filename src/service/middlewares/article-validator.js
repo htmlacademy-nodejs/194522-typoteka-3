@@ -5,7 +5,7 @@ const {StatusCode} = require(`../../constants`);
 const requiredFields = [
   `announce`,
   `categories`,
-  `fullText`,
+  `text`,
   `title`,
 ];
 

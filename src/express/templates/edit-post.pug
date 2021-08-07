@@ -3,13 +3,18 @@ extends layout.pug
 block vars
   - var wrapperClassNames='wrapper'
   - var isAdmin=true
+  -
+    const isArticleCategoryIncludeCategory = (article, categoryId) => {
+      const articleCategoriesIds = article.categories.map((articleCategory) => articleCategory.id);
+      return articleCategoriesIds.includes(categoryId);
+    }
 
 block content
   main
     section
       .popup.popup--new-publication.popup--anti
         .new-publication
-          form(action='#' method='POST')
+          form(action=`/articles/edit/${article.id}` method='POST' enctype='multipart/form-data')
             .new-publication__header
               h1 Новая публикация
               .new-publication__date-form
@@ -29,7 +34,7 @@ block content
                     input(type='text' name='title' placeholder='Заголовок' value=article.title required='')
                 .form__field.form__field--post-image
                   label
-                    input#image-name-field(type='text' name='photo' value='moya_mashinka.jpg' placeholder='Фотография' readonly='')
+                    input#image-name-field(type='text' name='photo' value=article.image placeholder='Фотография' readonly='')
                   .form__image-loader.form__image-loader--publication
                     label
                       input.visually-hidden(type='file' name='upload')
@@ -38,9 +43,9 @@ block content
                 .new-publication__category-wrapper
                   each category in categories
                     .new-publication__checkbox.new-publication__checkbox--auto
-                      input(id=category type='checkbox' name=category checked=article.categories.includes(category))
-                      label(for=category) #{category}
-                  a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
+                      input(id=category.name type='checkbox' name='categories' checked=isArticleCategoryIncludeCategory(article, category.id))
+                      label(for=category.name) #{category.name}
+                  a.new-publication__form-link.button.button--transparent(href='/categories') Добавить категорию
               .form__wrapper.form__wrapper--text
                 .form__field.form__field--publication-text
                   label
@@ -49,4 +54,4 @@ block content
                 .form__field.form__field--publication-text
                   label
                     textarea(rows='10' name='full-text' placeholder='Полный текст публикации')
-                      | #{article.fullText}
+                      | #{article.text}

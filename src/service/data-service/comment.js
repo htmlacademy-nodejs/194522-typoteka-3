@@ -1,29 +1,44 @@
 'use strict';
 
-const {nanoid} = require(`nanoid`);
-const {MAX_ID_LENGTH} = require(`../../constants`);
+const Aliase = require(`../models/aliase`);
 
 class CommentService {
-  findAll(article) {
-    return article.comments;
+  constructor(sequelize) {
+    this._Comment = sequelize.models.Comment;
   }
 
-  delete(article, commentId) {
-    const commentToDelete = article.comments.find((comment) => comment.id === commentId);
-    if (!commentToDelete) {
-      return null;
+  async findAll({limit = false, isWithArticlesData = false}) {
+    const include = [Aliase.USER];
+    if (isWithArticlesData) {
+      include.push(Aliase.ARTICLE);
     }
 
-    article.comments = article.comments.filter((comment) => comment.id !== commentId);
-    return commentToDelete;
+    const findParams = limit ? {limit, include} : {include};
+    const comments = await this._Comment.findAll(findParams);
+    return comments;
   }
 
-  create(article, comment) {
-    const newComment = Object.assign(comment, {
-      id: nanoid(MAX_ID_LENGTH)
+  async findAllByArticleId(articleId) {
+    const comments = await this._Comment.findAll({
+      where: {articleId},
+      raw: true
     });
-    article.comments.push(newComment);
-    return newComment;
+    return comments;
+  }
+
+  async create(articleId, comment) {
+    const createdComment = await this._Comment.create({
+      articleId,
+      ...comment,
+    });
+    return createdComment;
+  }
+
+  async delete(id) {
+    const deletedRows = await this._Comment.destroy({
+      where: {id}
+    });
+    return !!deletedRows;
   }
 }
 

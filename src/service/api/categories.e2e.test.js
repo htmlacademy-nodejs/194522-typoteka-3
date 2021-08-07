@@ -5,84 +5,47 @@ const express = require(`express`);
 const categories = require(`./categories`);
 const {CategoryService} = require(`../data-service`);
 const {StatusCode} = require(`../../constants`);
+const {Sequelize} = require(`sequelize`);
+const fillDbWithData = require(`../lib/fill-db-with-data`);
 
-const mockData = [
-  {
-    "id": `zhG-y`,
-    "announce": [
-      `Вы можете достичь всего. Стоит только немного постараться и запастись книгами`,
-      `Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много`,
-    ],
-    "categories": [`Разное`],
-    "createdDate": 1603419401917,
-    "fullText": [
-      `Это один из лучших рок-музыкантов`,
-      `Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами`,
-      `Как начать действовать? Для начала просто соберитесь`
-    ],
-    "title": `Как достигнуть успеха не вставая с кресла`,
-    "comments": [
-      {
-        "id": `ORk_E`,
-        "text": `Мне кажется или я уже читал это где-то?`
-      },
-      {
-        "id": `5tzUN`,
-        "text": `Совсем немного.... Плюсую, но слишком много буквы!`
-      }
-    ]
-  },
-  {
-    "id": `LFrXN`,
-    "announce": [
-      `Этот смартфон — настоящая находка. Большой и яркий экран, мощнейший процессор — всё это в небольшом гаджете`,
-    ],
-    "categories": [`Программирование`],
-    "createdDate": 1598777410275,
-    "fullText": [
-      `Рок-музыка всегда ассоциировалась с протестами. Так ли это на самом деле`
-    ],
-    "title": `Самый лучший музыкальный альбом этого года`,
-    "comments": [
-      {
-        "id": `I4aP9`,
-        "text": `Плюсую, но слишком много буквы!. Согласен с автором!. Планируете записать видосик на эту тему?`
-      }
-    ]
-  },
-  {
-    "id": `6cqDJ`,
-    "announce": [
-      `Это один из лучших рок-музыкантов`
-    ],
-    "categories": [`Кино`],
-    "createdDate": 1598355262354,
-    "fullText": [
-      `Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много`,
-      `Альбом стал настоящим открытием года. Мощные гитарные рифы и скоростные соло-партии не дадут заскучать`
-    ],
-    "title": `Ёлки. История деревьев`,
-    "comments": [
-      {
-        "id": `m_iKk`,
-        "text": `Совсем немного...`
-      },
-      {
-        "id": `_Q2od`,
-        "text": `Согласен с автором!. Мне кажется или я уже читал это где-то?`
-      },
-      {
-        "id": `5nGKE`,
-        "text": `Согласен с автором!. Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.`
-      }
-    ]
-  }
-];
+const mockData = {
+  articles: [
+    {
+      announce: `Достичь успеха помогут ежедневные повторения`,
+      text: `Золотое сечение — соотношение двух величин, гармоническая пропорция`,
+      title: `Самый лучший музыкальный альбом этого года`,
+      image: `skyscraper@2x.jpg`,
+    }
+  ],
+  categories: [
+    `Деревья`,
+    `Музыка`,
+    `Кино`
+  ],
+  users: [
+    {
+      email: `ivanov@example.com`,
+      passwordHash: `123456`,
+      firstName: `Иван`,
+      lastName: `Иванов`,
+      avatar: `avatar-1.jpg`
+    },
+    {
+      email: `petrov@example.com`,
+      passwordHash: `123456`,
+      firstName: `Пётр`,
+      lastName: `Петров`,
+      avatar: `avatar-2.jpg`
+    }
+  ]
+};
 
-const createAPI = () => {
+const createAPI = async () => {
   const app = express();
   app.use(express.json());
-  categories(app, new CategoryService(mockData));
+  const mockDb = new Sequelize(`sqlite::memory:`, {logging: false});
+  await fillDbWithData(mockDb, mockData);
+  categories(app, new CategoryService(mockDb));
   return app;
 };
 
@@ -91,7 +54,7 @@ describe(`API returns categories`, () => {
   let response;
 
   beforeAll(async () => {
-    app = createAPI();
+    app = await createAPI();
     response = await request(app).get(`/categories`);
   });
 
@@ -103,7 +66,7 @@ describe(`API returns categories`, () => {
     expect(response.body.length).toBe(3);
   });
 
-  test(`Categories names are "Разное, Программирование, Кино"`, () => {
-    expect(response.body).toEqual(expect.arrayContaining([`Разное`, `Программирование`, `Кино`]));
+  test(`Categories names are "Деревья, Музыка, Кино"`, () => {
+    expect(response.body.map((category) => category.name)).toEqual(expect.arrayContaining([`Деревья`, `Музыка`, `Кино`]));
   });
 });

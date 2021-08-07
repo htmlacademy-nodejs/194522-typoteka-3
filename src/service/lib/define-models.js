@@ -16,13 +16,13 @@ module.exports = (sequelize) => {
   const User = defineUser(sequelize);
 
   Article.hasMany(Comment, {foreignKey: `articleId`, as: Aliase.COMMENTS});
-  Comment.belongsTo(Article, {foreignKey: `articleId`});
+  Comment.belongsTo(Article, {foreignKey: `articleId`, as: Aliase.ARTICLE});
 
   User.hasMany(Article, {foreignKey: `userId`, as: Aliase.ARTICLES});
   Article.belongsTo(User, {foreignKey: `userId`});
 
   User.hasMany(Comment, {foreignKey: `userId`, as: Aliase.COMMENTS});
-  Comment.belongsTo(User, {foreignKey: `userId`});
+  Comment.belongsTo(User, {foreignKey: `userId`, as: Aliase.USER});
 
   class ArticlesCategories extends Model {}
   ArticlesCategories.init({}, {sequelize});

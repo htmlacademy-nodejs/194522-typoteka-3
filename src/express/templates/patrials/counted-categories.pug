@@ -1,0 +1,8 @@
+section.articles-category__theme-list
+  h2.visually-hidden Список тем
+  ul.themes
+    each category in countedCategories
+      li.themes__item
+        a.themes__item-link(href=`/articles/category/${category.id}` class=selectedCategoryId === category.id && `themes__item-link--active`)
+          | #{category.name}
+          sup #{category.count}

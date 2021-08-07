@@ -13,6 +13,7 @@ html(lang='ru')
     link(rel='stylesheet' href='/css/style.min.css')
   body
     block vars
+    include mixins/date-time.pug
     div(class=wrapperClassNames)
       if isAdmin
         include patrials/admin-header.pug

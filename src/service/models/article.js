@@ -18,13 +18,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    image: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
+    image: DataTypes.STRING,
   }, {
     sequelize,
-    modelName: `Article`
+    modelName: `Article`,
+    tableName: `articles`
   });
 
   return Article;

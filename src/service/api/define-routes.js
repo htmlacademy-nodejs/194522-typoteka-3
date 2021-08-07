@@ -4,6 +4,7 @@ const {Router} = require(`express`);
 const getArticlesRouter = require(`./articles`);
 const getCategoriesRouter = require(`./categories`);
 const getSearchRouter = require(`./search`);
+const getCommentsRouter = require(`./comments`);
 const {
   CategoryService,
   ArticleService,
@@ -11,10 +12,11 @@ const {
   SearchService,
 } = require(`../data-service`);
 
-module.exports = (data) => {
+module.exports = (sequelize) => {
   const apiRouter = new Router();
-  getCategoriesRouter(apiRouter, new CategoryService(data));
-  getArticlesRouter(apiRouter, new ArticleService(data), new CommentService());
-  getSearchRouter(apiRouter, new SearchService(data));
+  getCategoriesRouter(apiRouter, new CategoryService(sequelize));
+  getArticlesRouter(apiRouter, new ArticleService(sequelize), new CommentService(sequelize));
+  getSearchRouter(apiRouter, new SearchService(sequelize));
+  getCommentsRouter(apiRouter, new CommentService(sequelize));
   return apiRouter;
 };

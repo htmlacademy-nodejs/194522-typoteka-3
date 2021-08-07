@@ -1,12 +1,21 @@
 'use strict';
 
+const {Op} = require(`sequelize`);
+
 class SearchService {
-  constructor(articles) {
-    this._articles = articles;
+  constructor(sequelize) {
+    this._Article = sequelize.models.Article;
   }
 
-  findAll(query) {
-    return this._articles.filter((article) => article.title.includes(query));
+  async findAll(searchText) {
+    const articles = await this._Article.findAll({
+      where: {
+        title: {
+          [Op.substring]: searchText
+        }
+      }
+    });
+    return articles;
   }
 }
 

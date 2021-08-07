@@ -23,19 +23,57 @@ class API {
     return this._load(`/articles`);
   }
 
+  getMostCommentedArticles(limit) {
+    return this._load(`/articles`, {
+      params: {
+        limit,
+        isMostCommented: true
+      }
+    });
+  }
+
+  getArticlesByCategory(categoryId) {
+    return this._load(`/articles/category/${categoryId}`);
+  }
+
   getArticle(id) {
     return this._load(`/articles/${id}`);
   }
 
-  postArticle(data) {
+  createArticle(data) {
     return this._load(`/articles`, {
       method: `POST`,
       data
     });
   }
 
+  editArticle(id, data) {
+    return this._load(`/articles/${id}`, {
+      method: `PUT`,
+      data
+    });
+  }
+
   getCategories() {
     return this._load(`/categories`);
+  }
+
+  getCountedCategories() {
+    return this._load(`/categories`, {
+      params: {
+        isWithCount: true
+      }
+    });
+  }
+
+  getCategory(id) {
+    return this._load(`/categories/${id}`);
+  }
+
+  getComments({limit, isWithArticlesData}) {
+    return this._load(`/comments`, {
+      params: {limit, isWithArticlesData}
+    });
   }
 
   search(title) {

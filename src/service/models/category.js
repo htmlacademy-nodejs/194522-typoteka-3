@@ -12,7 +12,8 @@ module.exports = (sequelize) => {
     }
   }, {
     sequelize,
-    modelName: `Category`
+    modelName: `Category`,
+    tableName: `categories`
   });
 
   return Category;

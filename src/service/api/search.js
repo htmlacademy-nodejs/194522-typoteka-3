@@ -7,13 +7,13 @@ module.exports = (apiRouter, service) => {
   const searchRouter = new Router();
   apiRouter.use(`/search`, searchRouter);
 
-  searchRouter.get(`/`, (req, res) => {
+  searchRouter.get(`/`, async (req, res) => {
     const {title = ``} = req.query;
     if (!title) {
       return res.status(StatusCode.BAD_REQUEST).json([]);
     }
 
-    const searchResult = service.findAll(title);
+    const searchResult = await service.findAll(title);
     const searchStatus = searchResult.length ? StatusCode.OK : StatusCode.NOT_FOUND;
     return res.status(searchStatus).json(searchResult);
   });

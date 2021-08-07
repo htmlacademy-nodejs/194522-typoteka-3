@@ -3,24 +3,30 @@
 const express = require(`express`);
 const {StatusCode, API_PREFIX} = require(`../../constants`);
 const api = require(`../api`);
-const getMockData = require(`../lib/get-mock-data`);
 const connectDb = require(`../lib/connect-db`);
 const getSequelize = require(`../lib/get-sequelize`);
 const {getLogger} = require(`../lib/logger`);
+const defineModels = require(`../lib/define-models`);
 
 const DEFAULT_PORT = 3000;
 const NOT_FOUND_MESSAGE = `Не найдено`;
 const logger = getLogger({name: `api`});
 
+const initDb = async (sequelize) => {
+  await connectDb(sequelize);
+  defineModels(sequelize);
+};
+
 module.exports = {
   name: `--server`,
   async run(args) {
-    await connectDb(getSequelize());
-    const [userPort] = args;
-    const port = parseInt(userPort, 10) || DEFAULT_PORT;
+    const sequelize = getSequelize();
+    await initDb(sequelize);
+
+    const [userParamPort] = args;
+    const port = parseInt(userParamPort, 10) || DEFAULT_PORT;
     const app = express();
-    const mockData = await getMockData();
-    const apiRouter = api(mockData);
+    const apiRouter = api(sequelize);
 
     app.use(express.json());
 
