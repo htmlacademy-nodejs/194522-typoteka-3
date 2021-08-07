@@ -1,6 +1,5 @@
 'use strict';
 
-const {ExitCode} = require(`../../constants`);
 const Aliase = require(`../models/aliase`);
 const defineModels = require(`./define-models`);
 const logger = require(`./logger`).getLogger();
@@ -29,6 +28,6 @@ module.exports = async (sequelize, data) => {
     logger.info(`DB was successfully filled with mock data.`);
   } catch (err) {
     logger.error(`An error occured on filling database: ${err.message}`);
-    process.exit(ExitCode.ERROR);
+    throw new Error(err.message);
   }
 };
