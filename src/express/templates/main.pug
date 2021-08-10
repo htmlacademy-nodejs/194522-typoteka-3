@@ -9,26 +9,32 @@ block content
     p
       | Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏
     include patrials/counted-categories.pug
-    .main-page__section-flex
+    .main-page__section-flex(class=!mostCommentedArticles.length && !comments.length && `main-page__section-flex--short`)
       section.main-page__hot.hot
         h2.hot__name
           | Самое обсуждаемое
           span.hot__icon.hot__icon--fire
-        ul.hot__list
-          each article in mostCommentedArticles
-            li.hot__list-item
-              a.hot__list-link(href=`/articles/${article.id}`) #{article.title}
-                sup.hot__link-sup #{article.commentsCount}
+        if mostCommentedArticles.length
+          ul.hot__list
+            each article in mostCommentedArticles
+              li.hot__list-item
+                a.hot__list-link(href=`/articles/${article.id}`) #{article.title}
+                  sup.hot__link-sup #{article.commentsCount}
+        else
+          <p class="hot__empty">Здесь пока ничего нет...</p>
       section.main-page__last.last
         h2.last__name
           | Последние комментарии
           span.last__icon.last__icon--cloud
-        ul.last__list
-          each comment in comments
-            li.last__list-item
-              img.last__list-image(src=`/img/${comment.user.avatar}` width='20' height='20' alt='Аватар пользователя')
-              b.last__list-name #{comment.user.firstName} #{comment.user.lastName}
-              a.last__list-link(href=`/articles/${comment.articleId}`) #{comment.text}
+        if comments.length
+          ul.last__list
+            each comment in comments
+              li.last__list-item
+                img.last__list-image(src=`/img/${comment.user.avatar}` width='20' height='20' alt='Аватар пользователя')
+                b.last__list-name #{comment.user.firstName} #{comment.user.lastName}
+                a.last__list-link(href=`/articles/${comment.articleId}`) #{comment.text}
+        else
+          <p class="hot__empty">Здесь пока ничего нет...</p>
     section.main-page__list.preview
       h2.visually-hidden Список превью статей
       ul.preview__list
