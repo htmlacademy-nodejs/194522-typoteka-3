@@ -98,10 +98,10 @@ describe(`API works correctly with requesting article by id`, () => {
   });
 });
 
-test(`Returns 404 for requesting non-existing article`, async () => {
+test(`Returns 400 for requesting non-existing article`, async () => {
   const app = await createApp();
   const response = await request(app).get(`/articles/non-existing-id`);
-  expect(response.statusCode).toBe(StatusCode.NOT_FOUND);
+  expect(response.statusCode).toBe(StatusCode.BAD_REQUEST);
 });
 
 describe(`API works correctly with posting valid article`, () => {
@@ -109,10 +109,10 @@ describe(`API works correctly with posting valid article`, () => {
   let response;
 
   const newArticle = {
-    announce: `test announce`,
+    announce: `test announce test announce test announce test announce`,
     categories: [1],
     text: `full mock text`,
-    title: `test title`,
+    title: `test title test title test title test title`,
   };
 
   beforeAll(async () => {
@@ -146,10 +146,10 @@ describe(`API changes existing article`, () => {
   let app;
 
   const updatedArticle = {
-    announce: `test announce`,
+    announce: `test announce test announce test announce test announce`,
     categories: [1],
     text: `full mock text`,
-    title: `new test title`,
+    title: `new test title new test title new test title new test title`,
   };
 
   beforeAll(async () => {
@@ -163,11 +163,11 @@ describe(`API changes existing article`, () => {
 
   test(`Item is changed`, () => request(app)
     .get(`/articles/1`)
-    .expect((res) => expect(res.body.title).toBe(`new test title`))
+    .expect((res) => expect(res.body.title).toBe(`new test title new test title new test title new test title`))
   );
 });
 
-test(`Returns 404 for trying to change non-existent article`, async () => {
+test(`Returns 400 for trying to change non-existent article`, async () => {
   const app = await createApp();
   const newArticle = {
     announce: `test announce`,
@@ -178,7 +178,7 @@ test(`Returns 404 for trying to change non-existent article`, async () => {
   await request(app)
     .put(`/articles/asdf`)
     .send(newArticle)
-    .expect(StatusCode.NOT_FOUND);
+    .expect(StatusCode.BAD_REQUEST);
 });
 
 describe(`API correctly delete article`, () => {
@@ -242,14 +242,14 @@ describe(`API creates a comment if data is valid`, () => {
   );
 });
 
-test(`API refuses to create a comment to non-existent article and returns status code 404`, async () => {
+test(`API refuses to create a comment to non-existent article and returns status code 400`, async () => {
   const app = await createApp();
   await request(app)
     .post(`/articles/NOEXST/comments`)
     .send({
       text: `test`
     })
-    .expect(StatusCode.NOT_FOUND);
+    .expect(StatusCode.BAD_REQUEST);
 });
 
 test(`API refuses to create a comment when data is invalid, and returns status code 400`, async () => {
@@ -281,12 +281,56 @@ test(`API refuses to delete non-existent comment`, async () => {
   const app = await createApp();
   await request(app)
     .delete(`/articles/1/comments/NOEXST`)
-    .expect(StatusCode.NOT_FOUND);
+    .expect(StatusCode.BAD_REQUEST);
 });
 
 test(`API refuses to delete a comment to non-existent article`, async () => {
   const app = await createApp();
   await request(app)
     .delete(`/articles/NOEXST/comments/1`)
-    .expect(StatusCode.NOT_FOUND);
+    .expect(StatusCode.BAD_REQUEST);
+});
+
+describe(`API works correctly with invalid data`, () => {
+  let app;
+
+  const newArticle = {
+    announce: `test announce`,
+    categories: [1],
+    text: `full mock text`,
+    title: `test title`,
+  };
+
+  beforeAll(async () => {
+    app = await createApp();
+  });
+
+  test(`When field type is wrong response code is 400`, async () => {
+    const invalidArticles = [
+      {...newArticle, announce: true},
+      {...newArticle, image: 1},
+      {...newArticle, title: false},
+      {...newArticle, categories: `asdf`},
+    ];
+    for (const invalidArticle of invalidArticles) {
+      await request(app)
+        .post(`/articles`)
+        .send(invalidArticle)
+        .expect(StatusCode.BAD_REQUEST);
+    }
+  });
+
+  test(`When field value is wrong response code is 400`, async () => {
+    const invalidArticles = [
+      {...newArticle, announce: `too short`},
+      {...newArticle, title: `too short`},
+      {...newArticle, categories: []}
+    ];
+    for (const invalidArticle of invalidArticles) {
+      await request(app)
+        .post(`/articles`)
+        .send(invalidArticle)
+        .expect(StatusCode.BAD_REQUEST);
+    }
+  });
 });

@@ -40,7 +40,7 @@ const mockData = {
   ]
 };
 
-const createAPI = async () => {
+const createApp = async () => {
   const app = express();
   app.use(express.json());
   const mockDb = new Sequelize(`sqlite::memory:`, {logging: false});
@@ -54,7 +54,7 @@ describe(`API returns categories`, () => {
   let response;
 
   beforeAll(async () => {
-    app = await createAPI();
+    app = await createApp();
     response = await request(app).get(`/categories`);
   });
 
@@ -69,4 +69,9 @@ describe(`API returns categories`, () => {
   test(`Categories names are "Деревья, Музыка, Кино"`, () => {
     expect(response.body.map((category) => category.name)).toEqual(expect.arrayContaining([`Деревья`, `Музыка`, `Кино`]));
   });
+});
+
+test(`Returns status code 400 for invalid route params`, async () => {
+  const app = await createApp();
+  await request(app).get(`/categories/asdf`).expect(StatusCode.BAD_REQUEST);
 });
