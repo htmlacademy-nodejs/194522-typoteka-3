@@ -5,6 +5,7 @@ const {createStorage, ensureArray, decodeURIArray} = require(`../../utils`);
 const {nanoid} = require(`nanoid`);
 const path = require(`path`);
 const {ARTICLES_PER_PAGE} = require(`../../constants`);
+const routeParamsValidator = require(`../middlewares/route-params-validator`);
 const api = require(`../api`).getAPI();
 
 const articlesRouter = new Router();
@@ -21,12 +22,12 @@ articlesRouter.get(`/add`, async (req, res) => {
   res.render(`new-post`, {categories, validationErrors});
 });
 
-articlesRouter.get(`/edit/:id`, async (req, res, next) => {
-  const {id} = req.params;
+articlesRouter.get(`/edit/:articleId`, routeParamsValidator, async (req, res, next) => {
+  const {articleId} = req.params;
   const validationErrors = decodeURIArray(req.query.validationErrors);
   try {
     const [article, categories] = await Promise.all([
-      api.getArticle(id),
+      api.getArticle(articleId),
       api.getCategories()
     ]);
     res.render(`edit-post`, {article, categories, validationErrors});
@@ -35,8 +36,8 @@ articlesRouter.get(`/edit/:id`, async (req, res, next) => {
   }
 });
 
-articlesRouter.get(`/category/:id`, async (req, res) => {
-  const categoryId = req.params.id;
+articlesRouter.get(`/category/:categoryId`, routeParamsValidator, async (req, res) => {
+  const {categoryId} = req.params;
   const page = +req.query.page || 1;
   const [
     {count, articles},
@@ -64,9 +65,9 @@ articlesRouter.get(`/category/:id`, async (req, res) => {
   });
 });
 
-articlesRouter.get(`/:id`, async (req, res) => {
+articlesRouter.get(`/:articleId`, routeParamsValidator, async (req, res) => {
   const validationErrors = decodeURIArray(req.query.validationErrors);
-  const article = await api.getArticle(req.params.id);
+  const article = await api.getArticle(req.params.articleId);
   res.render(`post`, {article, validationErrors});
 });
 
@@ -88,9 +89,9 @@ articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
   }
 });
 
-articlesRouter.post(`/edit/:id`, upload.single(`upload`), async (req, res) => {
+articlesRouter.post(`/edit/:articleId`, routeParamsValidator, upload.single(`upload`), async (req, res) => {
   const {body, file} = req;
-  const {id} = req.params;
+  const {articleId} = req.params;
 
   const articleData = {
     categories: ensureArray(body.categories),
@@ -101,14 +102,14 @@ articlesRouter.post(`/edit/:id`, upload.single(`upload`), async (req, res) => {
   };
 
   try {
-    await api.editArticle(id, articleData);
+    await api.editArticle(articleId, articleData);
     res.redirect(`/my`);
   } catch (err) {
-    res.redirect(`/articles/edit/${id}?validationErrors=${encodeURIComponent(err.response.data)}`);
+    res.redirect(`/articles/edit/${articleId}?validationErrors=${encodeURIComponent(err.response.data)}`);
   }
 });
 
-articlesRouter.post(`/:articleId/comments`, async (req, res) => {
+articlesRouter.post(`/:articleId/comments`, routeParamsValidator, async (req, res) => {
   const {articleId} = req.params;
   try {
     await api.createComment(articleId, req.body);

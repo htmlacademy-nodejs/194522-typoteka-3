@@ -3,9 +3,11 @@
 const {Router} = require(`express`);
 const {StatusCode} = require(`../../constants`);
 const articleExist = require(`../middlewares/article-exist`);
-const schemaValidator = require(`../middlewares/schema-validator`);
+const schemaBodyValidator = require(`../middlewares/schema-body-validator`);
+const schemaParamsValidator = require(`../middlewares/schema-params-validator`);
 const articleSchema = require(`../schemas/article`);
 const commentSchema = require(`../schemas/comment`);
+const routeParams = require(`../schemas/route-params`);
 
 module.exports = (apiRouter, articleService, commentService) => {
   const articlesRouter = new Router();
@@ -27,12 +29,12 @@ module.exports = (apiRouter, articleService, commentService) => {
     return res.status(StatusCode.OK).json(articles);
   });
 
-  articlesRouter.get(`/:articleId`, articleExist(articleService), (req, res) => {
+  articlesRouter.get(`/:articleId`, [schemaParamsValidator(routeParams), articleExist(articleService)], (req, res) => {
     const {article} = res.locals;
     return res.status(StatusCode.OK).json(article);
   });
 
-  articlesRouter.get(`/category/:categoryId`, async (req, res) => {
+  articlesRouter.get(`/category/:categoryId`, schemaParamsValidator(routeParams), async (req, res) => {
     const {limit, offset} = req.query;
     const pageData = await articleService.findPageByCategory({
       categoryId: req.params.categoryId,
@@ -42,35 +44,35 @@ module.exports = (apiRouter, articleService, commentService) => {
     res.status(StatusCode.OK).json(pageData);
   });
 
-  articlesRouter.post(`/`, schemaValidator(articleSchema), async (req, res) => {
+  articlesRouter.post(`/`, schemaBodyValidator(articleSchema), async (req, res) => {
     const newPost = await articleService.create(req.body);
     res.status(StatusCode.CREATED).json(newPost);
   });
 
-  articlesRouter.put(`/:articleId`, [articleExist(articleService), schemaValidator(articleSchema)], async (req, res) => {
+  articlesRouter.put(`/:articleId`, [schemaParamsValidator(routeParams), articleExist(articleService), schemaBodyValidator(articleSchema)], async (req, res) => {
     const {articleId} = req.params;
     const result = await articleService.update(articleId, req.body);
     return res.status(StatusCode.OK).json(result);
   });
 
-  articlesRouter.delete(`/:articleId`, articleExist(articleService), async (req, res) => {
+  articlesRouter.delete(`/:articleId`, [schemaParamsValidator(routeParams), articleExist(articleService)], async (req, res) => {
     const {articleId} = req.params;
     const result = await articleService.delete(articleId);
     return res.status(StatusCode.OK).json(result);
   });
 
-  articlesRouter.get(`/:articleId/comments`, articleExist(articleService), async (req, res) => {
+  articlesRouter.get(`/:articleId/comments`, [schemaParamsValidator(routeParams), articleExist(articleService)], async (req, res) => {
     const comments = await commentService.findAllByArticleId(req.params.articleId);
     return res.status(StatusCode.OK).json(comments);
   });
 
-  articlesRouter.post(`/:articleId/comments`, articleExist(articleService), schemaValidator(commentSchema), async (req, res) => {
+  articlesRouter.post(`/:articleId/comments`, [schemaParamsValidator(routeParams), articleExist(articleService), schemaBodyValidator(commentSchema)], async (req, res) => {
     const {article} = res.locals;
     const newComment = await commentService.create(article.id, req.body);
     return res.status(StatusCode.CREATED).json(newComment);
   });
 
-  articlesRouter.delete(`/:articleId/comments/:commentId`, articleExist(articleService), async (req, res) => {
+  articlesRouter.delete(`/:articleId/comments/:commentId`, [schemaParamsValidator(routeParams), articleExist(articleService)], async (req, res) => {
     const {commentId} = req.params;
     const isDeleted = await commentService.delete(commentId);
 

@@ -2,6 +2,8 @@
 
 const {Router} = require(`express`);
 const {StatusCode} = require(`../../constants`);
+const schemaParamsValidator = require(`../middlewares/schema-params-validator`);
+const routeParams = require(`../schemas/route-params`);
 
 module.exports = (apiRouter, service) => {
   const categoriesRouter = new Router();
@@ -17,7 +19,7 @@ module.exports = (apiRouter, service) => {
     return res.status(StatusCode.OK).json(categories);
   });
 
-  categoriesRouter.get(`/:id`, async (req, res) => {
+  categoriesRouter.get(`/:categoryId`, schemaParamsValidator(routeParams), async (req, res) => {
     const category = await service.getOne(req.params.id);
     return res.status(StatusCode.OK).json(category);
   });
