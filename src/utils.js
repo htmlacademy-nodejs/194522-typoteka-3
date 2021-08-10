@@ -34,10 +34,13 @@ const ensureArray = (value) => {
   return [];
 };
 
+const decodeURIArray = (string) => string ? string.split(`,`) : [];
+
 module.exports = {
   getRandomInt,
   getRandomArrayElement,
   getRandomArrayElements,
   createStorage,
   ensureArray,
+  decodeURIArray,
 };

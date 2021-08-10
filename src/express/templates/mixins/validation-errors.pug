@@ -1,0 +1,6 @@
+mixin validationErrors(errors)
+  .form__validation-error
+    p.form__error-message Ошибки валидации:
+    ul.form__errors
+      each error in errors
+        li.form__error #{error}

@@ -19,6 +19,7 @@ html(lang='ru')
     block vars
     include mixins/date-time.pug
     include mixins/pagination.pug
+    include mixins/validation-errors.pug
     div(class=wrapperClassNames)
       if isAdmin
         include patrials/admin-header.pug

@@ -3,8 +3,9 @@
 const {Router} = require(`express`);
 const {StatusCode} = require(`../../constants`);
 const articleExist = require(`../middlewares/article-exist`);
-const articleValidator = require(`../middlewares/article-validator`);
-const commentValidator = require(`../middlewares/comment-validator`);
+const schemaValidator = require(`../middlewares/schema-validator`);
+const articleSchema = require(`../schemas/article`);
+const commentSchema = require(`../schemas/comment`);
 
 module.exports = (apiRouter, articleService, commentService) => {
   const articlesRouter = new Router();
@@ -41,12 +42,12 @@ module.exports = (apiRouter, articleService, commentService) => {
     res.status(StatusCode.OK).json(pageData);
   });
 
-  articlesRouter.post(`/`, articleValidator, async (req, res) => {
+  articlesRouter.post(`/`, schemaValidator(articleSchema), async (req, res) => {
     const newPost = await articleService.create(req.body);
     res.status(StatusCode.CREATED).json(newPost);
   });
 
-  articlesRouter.put(`/:articleId`, [articleExist(articleService), articleValidator], async (req, res) => {
+  articlesRouter.put(`/:articleId`, [articleExist(articleService), schemaValidator(articleSchema)], async (req, res) => {
     const {articleId} = req.params;
     const result = await articleService.update(articleId, req.body);
     return res.status(StatusCode.OK).json(result);
@@ -63,7 +64,7 @@ module.exports = (apiRouter, articleService, commentService) => {
     return res.status(StatusCode.OK).json(comments);
   });
 
-  articlesRouter.post(`/:articleId/comments`, articleExist(articleService), commentValidator, async (req, res) => {
+  articlesRouter.post(`/:articleId/comments`, articleExist(articleService), schemaValidator(commentSchema), async (req, res) => {
     const {article} = res.locals;
     const newComment = await commentService.create(article.id, req.body);
     return res.status(StatusCode.CREATED).json(newComment);

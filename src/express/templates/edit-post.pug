@@ -27,6 +27,8 @@ block content
             a.popup__button.button.button--popup-close(aria-label='Закрыть окно')
               | Закрыть
               | окно
+            if validationErrors.length
+              +validationErrors(validationErrors)
             .new-publication__form.form
               .form__wrapper.form__wrapper--intro
                 .form__field

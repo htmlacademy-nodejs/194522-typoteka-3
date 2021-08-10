@@ -88,6 +88,13 @@ class API {
     });
   }
 
+  createComment(articleId, data) {
+    return this._load(`/articles/${articleId}/comments`, {
+      method: `POST`,
+      data
+    });
+  }
+
   search(title) {
     return this._load(`/search`, {
       params: {title}
