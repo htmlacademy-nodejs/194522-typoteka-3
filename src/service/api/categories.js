@@ -20,7 +20,7 @@ module.exports = (apiRouter, service) => {
   });
 
   categoriesRouter.get(`/:categoryId`, schemaParamsValidator(routeParams), async (req, res) => {
-    const category = await service.getOne(req.params.id);
+    const category = await service.findOne(req.params.categoryId);
     return res.status(StatusCode.OK).json(category);
   });
 };

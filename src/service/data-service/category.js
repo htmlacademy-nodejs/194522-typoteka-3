@@ -47,7 +47,7 @@ class CategoryService {
     return countedCategories.map((category) => category.get());
   }
 
-  async getOne(id) {
+  async findOne(id) {
     const category = await this._Category.findByPk(id);
     return category;
   }
