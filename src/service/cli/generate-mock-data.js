@@ -39,14 +39,16 @@ const mockUsers = [
     passwordHash: `123456`,
     firstName: `Иван`,
     lastName: `Иванов`,
-    avatar: `avatar-1.png`
+    avatar: `avatar-1.png`,
+    isAdmin: true
   },
   {
     email: `petrov@example.com`,
     passwordHash: `123456`,
     firstName: `Пётр`,
     lastName: `Петров`,
-    avatar: `avatar-2.png`
+    avatar: `avatar-2.png`,
+    isAdmin: false
   }
 ];
 

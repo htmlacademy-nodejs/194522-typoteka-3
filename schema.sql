@@ -9,7 +9,8 @@ CREATE TABLE users(
   lastName varchar(250) NOT NULL,
   email varchar(250) NOT NULL UNIQUE,
   passwordHash varchar(250) NOT NULL,
-  avatar varchar(250) NOT NULL
+  avatar varchar(250),
+  isAdmin boolean NOT NULL
 );
 
 CREATE TABLE articles(

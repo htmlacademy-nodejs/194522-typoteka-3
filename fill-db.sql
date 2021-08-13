@@ -9,9 +9,9 @@ INSERT INTO categories(name) VALUES
 ('Программирование'),
 ('Железо');
 
-INSERT INTO users (firstName, lastName, email, passwordHash, avatar) VALUES
-('Ivanov', 'Ivan', 'ivanov@ivan.com', '123456', 'avatar-1.jpg'),
-('Petrov', 'Petr', 'petrov@petr.com', '123456', 'avatar-2.jpg');
+INSERT INTO users (firstName, lastName, email, passwordHash, avatar, isAdmin) VALUES
+('Ivanov', 'Ivan', 'ivanov@ivan.com', '123456', 'avatar-1.jpg', true),
+('Petrov', 'Petr', 'petrov@petr.com', '123456', 'avatar-2.jpg', false);
 
 ALTER TABLE articles DISABLE TRIGGER ALL;
 INSERT INTO articles (title, announce, text, image, userId) VALUES

@@ -7,27 +7,24 @@ const {generateDbData} = require(`./generate-mock-data`);
 const DEFAULT_MOCKS_QUANTITY = 1;
 const FILL_DB_FILE = `fill-db.sql`;
 
-const joinObjectValuesInInsertString = (obj, keysToInclude = [], numTypeFields) => {
+const joinObjectValuesInInsertString = (obj, keysToInclude = [], notStringTypes) => {
   return keysToInclude.reduce((sum, current, index) => {
     const currentValue = obj[current];
-    if (!currentValue) {
-      return null;
-    }
     const isLastElement = index === keysToInclude.length - 1;
-    const isNumType = numTypeFields.includes(current);
-    const stringToAdd = isNumType ? sum + currentValue : sum + `'${currentValue}'`;
+    const isNotStringType = notStringTypes.includes(current);
+    const stringToAdd = isNotStringType ? sum + currentValue : sum + `'${currentValue}'`;
     return isLastElement ? `${stringToAdd})` : `${stringToAdd}, `;
   }, `(`);
 };
 
 const getValuesString = (arr, fields) => arr.map((item) => {
-  const numTypes = [`userId`, `articleId`, `categoryId`];
-  return joinObjectValuesInInsertString(item, fields, numTypes);
+  const notStringTypes = [`userId`, `articleId`, `categoryId`, `isAdmin`];
+  return joinObjectValuesInInsertString(item, fields, notStringTypes);
 }).join(`,\n`);
 
 const Fields = {
   Article: [`title`, `announce`, `text`, `image`, `userId`],
-  User: [`email`, `passwordHash`, `firstName`, `lastName`, `avatar`],
+  User: [`email`, `passwordHash`, `firstName`, `lastName`, `avatar`, `isAdmin`],
   ArticlesCategories: [`articleId`, `categoryId`],
   Comment: [`text`, `userId`, `articleId`]
 };

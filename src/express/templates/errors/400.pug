@@ -22,8 +22,9 @@ html(lang='ru')
         h1.visually-hidden Ошибка 400
         section.error.error--400
           h2.error__title.title.title--big Что-то пошло не так
-          each error in errorsMessages
-            p.error__text.text.text--big #{error}
+          if errorsMessages && errorsMessages.length
+            each error in errorsMessages
+              p.error__text.text.text--big #{error}
           a.error__link.text.text--big(href='/') Вернуться на главную
       footer.footer
         a.footer__copyright(href='#' aria-label='HTMLAcademy')

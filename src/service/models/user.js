@@ -22,10 +22,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    avatar: {
-      type: DataTypes.STRING,
+    avatar: DataTypes.STRING,
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
       allowNull: false
-    },
+    }
   }, {
     sequelize,
     modelName: `User`,
