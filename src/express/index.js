@@ -5,6 +5,8 @@ const path = require(`path`);
 const mainRoutes = require(`./routes/main`);
 const articlesRoutes = require(`./routes/articles`);
 const myRoutes = require(`./routes/my`);
+const session = require(`./middlewares/session`);
+const sequelize = require(`../service/lib/get-sequelize`)();
 
 const DEFAULT_PORT = 8080;
 const PUBLIC_DIR = `public`;
@@ -21,6 +23,8 @@ app.use(express.static(path.resolve(__dirname, UPLOAD_DIR)));
 
 app.use(express.urlencoded({extended: false}));
 
+app.use(session(sequelize));
+
 app.use(`/`, mainRoutes);
 app.use(`/my`, myRoutes);
 app.use(`/articles`, articlesRoutes);
@@ -33,5 +37,6 @@ app.use((err, req, res, _next) => {
   res.status(500).render(`errors/500`);
 });
 
+sequelize.sync({force: false});
 
 app.listen(DEFAULT_PORT);

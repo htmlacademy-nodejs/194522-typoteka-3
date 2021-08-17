@@ -69,7 +69,22 @@ mainRouter.get(`/register`, (req, res) => {
   const validationErrors = decodeURIArray(req.query.validationErrors);
   res.render(`sign-up`, {validationErrors});
 });
-mainRouter.get(`/login`, (req, res) => res.render(`login`));
+
+mainRouter.get(`/login`, (req, res) => {
+  const validationErrors = decodeURIArray(req.query.validationErrors);
+  res.render(`login`, {validationErrors});
+});
+
+mainRouter.post(`/login`, async (req, res) => {
+  const {email, password} = req.body;
+  try {
+    const user = await api.loginUser({email, password});
+    req.session.user = user;
+    res.redirect(`/`);
+  } catch (err) {
+    res.redirect(`/login?validationErrors=${encodeURIComponent(err.response.data)}`);
+  }
+});
 
 mainRouter.post(`/register`, upload.single(`upload`), async (req, res) => {
   const {body, file} = req;

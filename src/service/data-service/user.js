@@ -9,12 +9,12 @@ class User {
     const user = await this._User.findOne({
       where: {email}
     });
-    return user;
+    return user ? user.get() : null;
   }
 
   async createUser(data) {
     const newUser = await this._User.create(data);
-    return newUser;
+    return newUser.get();
   }
 }
 

@@ -107,6 +107,13 @@ class API {
       data
     });
   }
+
+  loginUser(data) {
+    return this._load(`/user/login`, {
+      method: `POST`,
+      data
+    });
+  }
 }
 
 const defaultAPI = new API(defaultURL, TIMEOUT);

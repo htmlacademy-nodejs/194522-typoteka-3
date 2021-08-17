@@ -7,6 +7,7 @@ const createUserRouter = require(`./user`);
 const {UserService} = require(`../data-service`);
 const fillDbWithData = require(`../lib/fill-db-with-data`);
 const {StatusCode} = require(`../../constants`);
+const passwordUtils = require(`../lib/password`);
 
 const mockData = {
   articles: [
@@ -33,7 +34,7 @@ const mockData = {
   users: [
     {
       email: `ivanov@example.com`,
-      passwordHash: `123456`,
+      passwordHash: passwordUtils.hashSync(`123456`),
       firstName: `Иван`,
       lastName: `Иванов`,
       avatar: `avatar-1.jpg`,
@@ -41,7 +42,7 @@ const mockData = {
     },
     {
       email: `petrov@example.com`,
-      passwordHash: `123456`,
+      passwordHash: passwordUtils.hashSync(`123456`),
       firstName: `Пётр`,
       lastName: `Петров`,
       avatar: `avatar-2.jpg`,
@@ -154,5 +155,77 @@ describe(`API refuses to create new user if data is invalid`, () => {
       .post(`/user`)
       .send(userWithBusyEmail)
       .expect(StatusCode.BAD_REQUEST);
+  });
+});
+
+describe(`API authenticate user with valid login data`, () => {
+  let app;
+  let response;
+
+  const loginData = {
+    email: `ivanov@example.com`,
+    password: `123456`
+  };
+
+  beforeAll(async () => {
+    app = await createApp();
+    response = await request(app)
+      .post(`/user/login`)
+      .send(loginData);
+  });
+
+  test(`Returns status code ${StatusCode.OK}`, () => {
+    expect(response.statusCode).toBe(StatusCode.OK);
+  });
+
+  test(`User name is Иван`, () => {
+    expect(response.body.firstName).toBe(`Иван`);
+  });
+});
+
+describe(`API refuses to authenticate user with invalid login data`, () => {
+  let app;
+
+  beforeAll(async () => {
+    app = await createApp();
+  });
+
+  test(`Returns ${StatusCode.BAD_REQUEST} if no user with such email exist`, async () => {
+    await request(app).post(`/user/login`).send({
+      email: `asdfasdf@asdasd.com`,
+      password: `123123`,
+    })
+    .expect(StatusCode.BAD_REQUEST);
+  });
+
+  test(`Returns ${StatusCode.BAD_REQUEST} if login data schema is wrong`, async () => {
+    const validData = {
+      email: `ivanov@example.com`,
+      password: `123456`
+    };
+
+    const invalidDataList = [
+      {...validData, email: 1},
+      {...validData, email: ``},
+      {...validData, password: 1},
+      {...validData, password: ``},
+    ];
+
+    for (const invalidData of invalidDataList) {
+      await request(app)
+        .post(`/user/login`)
+        .send(invalidData)
+        .expect(StatusCode.BAD_REQUEST);
+    }
+  });
+
+  test(`Returns ${StatusCode.UNAUTHORIZED} if password is wrong`, async () => {
+    await request(app)
+      .post(`/user/login`)
+      .send({
+        email: `ivanov@example.com`,
+        password: `wrong password`
+      })
+      .expect(StatusCode.UNAUTHORIZED);
   });
 });
