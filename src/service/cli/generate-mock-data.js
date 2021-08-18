@@ -38,8 +38,8 @@ const mockUsers = [
   {
     email: `ivanov@example.com`,
     passwordHash: passwordUtils.hashSync(`123456`),
-    firstName: `Иван`,
-    lastName: `Иванов`,
+    firstName: `AdminName`,
+    lastName: `AdminSurname`,
     avatar: `avatar-1.png`,
     isAdmin: true
   },
@@ -98,7 +98,7 @@ const generate = async (count, {isAllFields}) => {
 
     const articles = Array(count).fill({}).map((_el, articleElementIndex) => {
       return {
-        userId: getRandomInt(1, mockUsers.length),
+        userId: 1,
         announce: getRandomArrayElement(texts),
         categories: [getRandomInt(1, categories.length)],
         text: getRandomArrayElements(getRandomInt(FullTextLength.MIN, FullTextLength.MAX), texts).join(`. `),

@@ -107,7 +107,6 @@ mainRouter.post(`/register`, upload.single(`upload`), async (req, res) => {
     password: body.password,
     passwordRepeated: body[`repeat-password`],
     avatar: file ? file.filename : undefined,
-    isAdmin: false
   };
 
   try {

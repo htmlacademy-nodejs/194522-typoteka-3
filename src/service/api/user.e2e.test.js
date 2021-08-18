@@ -38,7 +38,6 @@ const mockData = {
       firstName: `Иван`,
       lastName: `Иванов`,
       avatar: `avatar-1.jpg`,
-      isAdmin: true
     },
     {
       email: `petrov@example.com`,
@@ -46,7 +45,6 @@ const mockData = {
       firstName: `Пётр`,
       lastName: `Петров`,
       avatar: `avatar-2.jpg`,
-      isAdmin: false
     }
   ]
 };
@@ -68,7 +66,6 @@ describe(`API creates new user if data is valid`, () => {
     password: `123456`,
     passwordRepeated: `123456`,
     avatar: `avatar-1.jpg`,
-    isAdmin: false
   };
 
   test(`Returns status code ${StatusCode.CREATED}`, async () => {
@@ -88,7 +85,6 @@ describe(`API refuses to create new user if data is invalid`, () => {
     password: `123456`,
     passwordRepeated: `123456`,
     avatar: `avatar-1.jpg`,
-    isAdmin: false
   };
 
   beforeAll(async () => {
@@ -117,7 +113,6 @@ describe(`API refuses to create new user if data is invalid`, () => {
       {...validUserData, password: 1},
       {...validUserData, passwordRepeated: 1},
       {...validUserData, avatar: 1},
-      {...validUserData, isAdmin: 1},
     ];
 
     for (const badUserData of badUserDataList) {

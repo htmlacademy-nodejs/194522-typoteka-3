@@ -23,7 +23,6 @@ module.exports = (app, userService) => {
       firstName,
       lastName,
       avatar,
-      isAdmin,
     } = req.body;
 
     const passwordHash = await passwordUtils.hash(password);
@@ -33,7 +32,6 @@ module.exports = (app, userService) => {
       firstName,
       lastName,
       avatar,
-      isAdmin,
     };
     const newUser = await userService.createUser(userData);
     delete newUser.passwordHash;

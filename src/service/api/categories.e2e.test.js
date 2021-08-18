@@ -29,7 +29,6 @@ const mockData = {
       firstName: `Иван`,
       lastName: `Иванов`,
       avatar: `avatar-1.jpg`,
-      isAdmin: true
     },
     {
       email: `petrov@example.com`,
@@ -37,7 +36,6 @@ const mockData = {
       firstName: `Пётр`,
       lastName: `Петров`,
       avatar: `avatar-2.jpg`,
-      isAdmin: false
     }
   ]
 };
