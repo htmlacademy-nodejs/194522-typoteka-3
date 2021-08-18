@@ -5,6 +5,7 @@ const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
 const {MAX_ID_LENGTH, ExitCode} = require(`../../constants`);
 const {getRandomArrayElements, getRandomInt, getRandomArrayElement} = require(`../../utils`);
+const passwordUtils = require(`../lib/password`);
 
 const MILLISECONDS_IN_THREE_MONTH = 7776000000;
 const MAX_MOCKS_QUANTITY = 1000;
@@ -36,7 +37,7 @@ const CommentLength = {
 const mockUsers = [
   {
     email: `ivanov@example.com`,
-    passwordHash: `123456`,
+    passwordHash: passwordUtils.hashSync(`123456`),
     firstName: `Иван`,
     lastName: `Иванов`,
     avatar: `avatar-1.png`,
@@ -44,7 +45,7 @@ const mockUsers = [
   },
   {
     email: `petrov@example.com`,
-    passwordHash: `123456`,
+    passwordHash: passwordUtils.hashSync(`123456`),
     firstName: `Пётр`,
     lastName: `Петров`,
     avatar: `avatar-2.png`,
