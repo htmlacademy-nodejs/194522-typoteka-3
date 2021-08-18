@@ -30,10 +30,8 @@ block content
           ul.last__list
             each comment in comments
               li.last__list-item
-                //- img.last__list-image(src=`/img/${comment.user.avatar}` width='20' height='20' alt='Аватар пользователя')
-                //- b.last__list-name #{comment.user.firstName} #{comment.user.lastName}
-                img.last__list-image(src=`/img/avatar-4.png` width='20' height='20' alt='Аватар пользователя')
-                b.last__list-name Евгений Петров
+                img.last__list-image(src=`/img/${comment.user.avatar}` width='20' height='20' alt='Аватар пользователя')
+                b.last__list-name #{comment.user.firstName} #{comment.user.lastName}
                 a.last__list-link(href=`/articles/${comment.articleId}`) #{comment.text}
         else
           <p class="hot__empty">Здесь пока ничего нет...</p>

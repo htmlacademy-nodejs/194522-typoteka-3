@@ -6,6 +6,8 @@ const {nanoid} = require(`nanoid`);
 const path = require(`path`);
 const {ARTICLES_PER_PAGE} = require(`../../constants`);
 const routeParamsValidator = require(`../middlewares/route-params-validator`);
+const privateRouteAdmin = require(`../middlewares/private-route-admin`);
+const privateRoute = require(`../middlewares/private-route`);
 const api = require(`../api`).getAPI();
 
 const articlesRouter = new Router();
@@ -16,21 +18,23 @@ const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 
 const upload = createStorage(uploadDirAbsolute, nanoid(UNIQUE_NAME_LENGTH));
 
-articlesRouter.get(`/add`, async (req, res) => {
+articlesRouter.get(`/add`, privateRouteAdmin, async (req, res) => {
+  const {user} = req.session;
   const validationErrors = decodeURIArray(req.query.validationErrors);
   const categories = await api.getCategories();
-  res.render(`new-post`, {categories, validationErrors});
+  res.render(`new-post`, {categories, validationErrors, user});
 });
 
-articlesRouter.get(`/edit/:articleId`, routeParamsValidator, async (req, res, next) => {
+articlesRouter.get(`/edit/:articleId`, privateRouteAdmin, routeParamsValidator, async (req, res, next) => {
   const {articleId} = req.params;
+  const {user} = req.session;
   const validationErrors = decodeURIArray(req.query.validationErrors);
   try {
     const [article, categories] = await Promise.all([
       api.getArticle(articleId),
       api.getCategories()
     ]);
-    res.render(`edit-post`, {article, categories, validationErrors});
+    res.render(`edit-post`, {article, categories, validationErrors, user});
   } catch (err) {
     next(err);
   }
@@ -39,6 +43,7 @@ articlesRouter.get(`/edit/:articleId`, routeParamsValidator, async (req, res, ne
 articlesRouter.get(`/category/:categoryId`, routeParamsValidator, async (req, res) => {
   const {categoryId} = req.params;
   const page = +req.query.page || 1;
+  const {user} = req.session;
   const [
     {count, articles},
     countedCategories,
@@ -61,14 +66,16 @@ articlesRouter.get(`/category/:categoryId`, routeParamsValidator, async (req, re
     categoryName: category.name,
     selectedCategoryId: category.id,
     currentPage: page,
-    totalPagesCount
+    totalPagesCount,
+    user
   });
 });
 
 articlesRouter.get(`/:articleId`, routeParamsValidator, async (req, res) => {
+  const {user} = req.session;
   const validationErrors = decodeURIArray(req.query.validationErrors);
   const article = await api.getArticle(req.params.articleId);
-  res.render(`post`, {article, validationErrors});
+  res.render(`post`, {article, validationErrors, user});
 });
 
 articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
@@ -109,7 +116,7 @@ articlesRouter.post(`/edit/:articleId`, routeParamsValidator, upload.single(`upl
   }
 });
 
-articlesRouter.post(`/:articleId/comments`, routeParamsValidator, async (req, res) => {
+articlesRouter.post(`/:articleId/comments`, privateRoute, routeParamsValidator, async (req, res) => {
   const {articleId} = req.params;
   try {
     await api.createComment(articleId, req.body);
