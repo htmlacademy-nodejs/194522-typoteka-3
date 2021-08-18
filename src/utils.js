@@ -36,6 +36,14 @@ const ensureArray = (value) => {
 
 const decodeURIArray = (string) => string ? string.split(`,`) : [];
 
+const asyncErrorCatcher = (asyncMiddleware) => async (req, res, next) => {
+  try {
+    await asyncMiddleware(req, res);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getRandomInt,
   getRandomArrayElement,
@@ -43,4 +51,5 @@ module.exports = {
   createStorage,
   ensureArray,
   decodeURIArray,
+  asyncErrorCatcher,
 };

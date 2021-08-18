@@ -2,6 +2,7 @@
 
 const {Router} = require(`express`);
 const {StatusCode} = require(`../../constants`);
+const {asyncErrorCatcher} = require(`../../utils`);
 const schemaParamsValidator = require(`../middlewares/schema-params-validator`);
 const routeParams = require(`../schemas/route-params`);
 
@@ -19,8 +20,8 @@ module.exports = (apiRouter, service) => {
     return res.status(StatusCode.OK).json(categories);
   });
 
-  categoriesRouter.get(`/:categoryId`, schemaParamsValidator(routeParams), async (req, res) => {
+  categoriesRouter.get(`/:categoryId`, schemaParamsValidator(routeParams), asyncErrorCatcher(async (req, res) => {
     const category = await service.findOne(req.params.categoryId);
     return res.status(StatusCode.OK).json(category);
-  });
+  }));
 };

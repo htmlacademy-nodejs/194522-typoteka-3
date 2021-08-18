@@ -9,13 +9,14 @@ const emailValidator = require(`../middlewares/email-validator`);
 const passwordUtils = require(`../lib/password`);
 const authenticate = require(`../middlewares/authenticate`);
 const userExist = require(`../middlewares/user-exist`);
+const {asyncErrorCatcher} = require(`../../utils`);
 
 module.exports = (app, userService) => {
   const userRouter = new Router();
 
   app.use(`/user`, userRouter);
 
-  userRouter.post(`/`, [schemaBodyValidator(userSchema), emailValidator(userService)], async (req, res) => {
+  userRouter.post(`/`, [schemaBodyValidator(userSchema), emailValidator(userService)], asyncErrorCatcher(async (req, res) => {
     const {
       email,
       password,
@@ -37,7 +38,7 @@ module.exports = (app, userService) => {
     const newUser = await userService.createUser(userData);
     delete newUser.passwordHash;
     res.status(StatusCode.CREATED).json(newUser);
-  });
+  }));
 
   userRouter.post(`/login`, [
     schemaBodyValidator(loginDataSchema),

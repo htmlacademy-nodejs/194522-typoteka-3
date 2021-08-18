@@ -45,8 +45,9 @@ module.exports = {
       logger.error(`Route not found: ${req.url}`);
     });
 
-    app.use((err, _req, _res, _next) => {
+    app.use((err, _req, res, _next) => {
       logger.error(`An error occured on processing request: ${err.message}`);
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).send(err.message);
     });
 
     app.listen(port, (err) => {
