@@ -57,3 +57,4 @@ block content
                   label
                     textarea(rows='10' name='full-text' placeholder='Полный текст публикации')
                       | #{article.text}
+              input(type="hidden" name="_csrf" value=csrfToken)
