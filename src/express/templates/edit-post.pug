@@ -45,7 +45,7 @@ block content
                 .new-publication__category-wrapper
                   each category in categories
                     .new-publication__checkbox.new-publication__checkbox--auto
-                      input(id=category.name type='checkbox' name='categories' checked=isArticleCategoryIncludeCategory(article, category.id))
+                      input(id=category.name type='checkbox' name='categories' value=category.id checked=isArticleCategoryIncludeCategory(article, category.id))
                       label(for=category.name) #{category.name}
                   a.new-publication__form-link.button.button--transparent(href='/categories') Добавить категорию
               .form__wrapper.form__wrapper--text

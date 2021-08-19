@@ -10,11 +10,13 @@ class ArticleService {
     this._Comment = sequelize.models.Comment;
     this._User = sequelize.models.User;
     this._Category = sequelize.models.Category;
+    this._ArticlesCategories = sequelize.models.ArticlesCategories;
   }
 
   async findAll() {
     const articles = await this._Article.findAll({
       include: [Aliase.CATEGORIES, Aliase.COMMENTS],
+      order: [[`createdAt`, `DESC`]],
     });
     return articles;
   }
@@ -53,11 +55,15 @@ class ArticleService {
       offset,
       include: [
         Aliase.COMMENTS,
+        Aliase.CATEGORIES,
         {
-          model: this._Category,
-          as: Aliase.CATEGORIES,
-          where: {id: categoryId}
-        }
+          model: this._ArticlesCategories,
+          as: Aliase.ARTICLES_CATEGORIES,
+          attributes: [],
+          where: {
+            CategoryId: categoryId
+          },
+        },
       ],
       distinct: true
     });
@@ -86,7 +92,8 @@ class ArticleService {
       limit,
       offset,
       include: [Aliase.CATEGORIES, Aliase.COMMENTS],
-      distinct: true
+      distinct: true,
+      order: [[`createdAt`, `DESC`]],
     });
     return {count, articles: rows};
   }
