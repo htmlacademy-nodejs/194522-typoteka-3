@@ -78,9 +78,12 @@ articlesRouter.get(`/:articleId`, routeParamsValidator, async (req, res) => {
   res.render(`post`, {article, validationErrors, user});
 });
 
-articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
+articlesRouter.post(`/add`, privateRouteAdmin, upload.single(`upload`), async (req, res) => {
   const {body, file} = req;
+  const {user} = req.session;
+
   const articleData = {
+    userId: user.id,
     categories: ensureArray(body.categories),
     title: body[`title`],
     announce: body[`announcement`],
@@ -96,11 +99,13 @@ articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
   }
 });
 
-articlesRouter.post(`/edit/:articleId`, routeParamsValidator, upload.single(`upload`), async (req, res) => {
+articlesRouter.post(`/edit/:articleId`, privateRouteAdmin, routeParamsValidator, upload.single(`upload`), async (req, res) => {
   const {body, file} = req;
   const {articleId} = req.params;
+  const {user} = req.session;
 
   const articleData = {
+    userId: user.id,
     categories: ensureArray(body.categories),
     title: body[`title`],
     announce: body[`announcement`],
