@@ -118,8 +118,10 @@ articlesRouter.post(`/edit/:articleId`, routeParamsValidator, upload.single(`upl
 
 articlesRouter.post(`/:articleId/comments`, privateRoute, routeParamsValidator, async (req, res) => {
   const {articleId} = req.params;
+  const {user} = req.session;
+  const {text} = req.body;
   try {
-    await api.createComment(articleId, req.body);
+    await api.createComment(articleId, {text, userId: user.id});
     res.redirect(`/articles/${articleId}`);
   } catch (err) {
     res.redirect(`/articles/${articleId}?validationErrors=${encodeURIComponent(err.response.data)}`);

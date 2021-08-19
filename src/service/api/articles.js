@@ -69,7 +69,8 @@ module.exports = (apiRouter, articleService, commentService) => {
 
   articlesRouter.post(`/:articleId/comments`, [schemaParamsValidator(routeParams), articleExist(articleService), schemaBodyValidator(commentSchema)], asyncErrorCatcher(async (req, res) => {
     const {article} = res.locals;
-    const newComment = await commentService.create(article.id, req.body);
+    const {text, userId} = req.body;
+    const newComment = await commentService.create(article.id, {text, userId});
     return res.status(StatusCode.CREATED).json(newComment);
   }));
 
