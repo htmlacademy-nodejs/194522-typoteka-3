@@ -8,13 +8,18 @@ class CommentService {
   }
 
   async findAll({limit = false, isWithArticlesData = false}) {
+    const order = [[`createdAt`, `DESC`]];
     const include = [Aliase.USER];
+
     if (isWithArticlesData) {
       include.push(Aliase.ARTICLE);
     }
 
-    const findParams = limit ? {limit, include} : {include};
-    const comments = await this._Comment.findAll(findParams);
+    const comments = await this._Comment.findAll({
+      include,
+      order,
+      ...(limit && {limit}),
+    });
     return comments;
   }
 
