@@ -105,9 +105,13 @@ class ArticleService {
   }
 
   async update(id, article) {
-    const [affectedRows] = await this._Article.update(article, {
-      where: {id}
+    const articleToUpdate = await this._Article.findByPk(id, {
+      include: [
+        Aliase.CATEGORIES
+      ]
     });
+    const categoriesIds = article.categories.map((categoryId) => +categoryId);
+    const affectedRows = await articleToUpdate.setCategories(categoriesIds);
     return !!affectedRows;
   }
 
