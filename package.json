@@ -8,10 +8,11 @@
     "jest": "jest",
     "test::rest": "jest src/service/api/*.test.js",
     "eslint": "eslint --ext .js src/",
-    "start": "cross-env NODE_ENV=production node -r dotenv/config ./src/service/service.js",
-    "start::dev": "cross-env NODE_ENV=development nodemon -r dotenv/config ./src/service/service.js",
-    "start::debug": "cross-env NODE_ENV=development LOG_LEVEL=debug nodemon -r dotenv/config ./src/service/service.js",
-    "start-front-server": "nodemon -r dotenv/config ./src/express/index.js"
+    "start-back-server": "cross-env NODE_ENV=production node -r dotenv/config ./src/service/service.js --server",
+    "start-back-server::debug": "cross-env NODE_ENV=development LOG_LEVEL=debug nodemon -r dotenv/config ./src/service/service.js --server",
+    "start-front-server": "nodemon -r dotenv/config ./src/express/index.js",
+    "start-servers": "concurrently \"npm run start-back-server\" \"npm run start-front-server\"",
+    "start": "npm run start-servers"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "axios": "0.21.0",
     "bcrypt": "5.0.1",
     "chalk": "3.0.0",
+    "concurrently": "6.2.1",
     "connect-session-sequelize": "7.1.1",
     "cross-env": "7.0.2",
     "csurf": "1.11.0",
