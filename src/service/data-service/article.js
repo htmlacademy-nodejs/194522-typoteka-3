@@ -105,14 +105,11 @@ class ArticleService {
   }
 
   async update(id, article) {
-    const articleToUpdate = await this._Article.findByPk(id, {
-      include: [
-        Aliase.CATEGORIES
-      ]
-    });
+    await this._Article.update(article, {where: {id}});
     const categoriesIds = article.categories.map((categoryId) => +categoryId);
-    const affectedRows = await articleToUpdate.setCategories(categoriesIds);
-    return !!affectedRows;
+    const updatedArticle = await this.findOne(id);
+    await updatedArticle.setCategories(categoriesIds);
+    return updatedArticle.get();
   }
 
   async delete(id) {
