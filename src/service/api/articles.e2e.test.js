@@ -112,6 +112,7 @@ describe(`API works correctly with posting valid article`, () => {
     categories: [1],
     text: `full mock text`,
     title: `test title test title test title test title`,
+    userId: 1
   };
 
   beforeAll(async () => {
@@ -149,6 +150,7 @@ describe(`API changes existing article`, () => {
     categories: [1],
     text: `full mock text`,
     title: `new test title new test title new test title new test title`,
+    userId: 1
   };
 
   beforeAll(async () => {
@@ -173,6 +175,7 @@ test(`Returns 400 for trying to change non-existent article`, async () => {
     categories: [2],
     text: `full mock text`,
     title: `test title`,
+    userId: 1
   };
   await request(app)
     .put(`/articles/asdf`)
@@ -223,7 +226,8 @@ describe(`API creates a comment if data is valid`, () => {
   let response;
 
   const newComment = {
-    text: `Валидному комментарию достаточно этого поля`
+    text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi eaque consectetur iusto asperiores nobis voluptatem, accusantium impedit tenetur voluptas nesciunt!`,
+    userId: 1
   };
 
   beforeAll(async () => {
@@ -298,6 +302,7 @@ describe(`API works correctly with invalid data`, () => {
     categories: [1],
     text: `full mock text`,
     title: `test title`,
+    userId: 1
   };
 
   beforeAll(async () => {
