@@ -10,8 +10,10 @@ block content
       h1.notes__title Мои записи
       ul.notes__list
         each article in articles
-          li.notes__list-item
-            +dateTime(article.createdAt)(class=`notes__item-time`)
-            a.notes__item-text(href=`/articles/edit/${article.id}`) #{article.title}
-            button.notes__button.button.button--close-item(type='button')
-              span.visually-hidden Закрыть строку списка
+          form(action=`/my/delete/${article.id}` method="post")
+            li.notes__list-item
+              +dateTime(article.createdAt)(class=`notes__item-time`)
+              a.notes__item-text(href=`/articles/edit/${article.id}`) #{article.title}
+              input(type="hidden" name="_csrf" value=csrfToken)
+              button.notes__button.button.button--close-item(type='submit')
+                span.visually-hidden Закрыть строку списка

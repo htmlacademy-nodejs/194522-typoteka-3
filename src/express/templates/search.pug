@@ -19,7 +19,7 @@ block content
           if searchResults.length
             each article in searchResults
               .search__result
-                +dateTime(article.createdDate)(class='search__date')
+                +date(article.createdAt)(class='search__date')
                 a.search__link(href=`/articles/${article.id}`) #{article.title}
           else if searchingTitle && !searchResults.length
             p.search-page__empty Ничего не нашлось

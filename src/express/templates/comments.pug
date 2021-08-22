@@ -11,13 +11,15 @@ block content
       ul.publication__list
         each comment in comments
           li.publication__list-item
-            .publication__header
-              img.publication__list-image(src=`/img/${comment.user.avatar}` width='20' height='20' alt='Аватар пользователя')
-              b.publication__list-name #{comment.user.firstName} #{comment.user.lastName}
-              +dateTime(comment.createdAt)(class=`comments__date`)
-            a.publication__item-text(href=`/articles/${comment.articleId}`)
-              | #{comment.text}
-            p.publication__text-strong
-              | #{comment.article.title}
-            button.publication__button.button.button--close-item(type='button')
-              span.visually-hidden Закрыть строку списка
+            form(action=`/my/comments/delete/${comment.id}` method="POST")
+              .publication__header
+                img.publication__list-image(src=`/img/${comment.user.avatar}` width='20' height='20' alt='Аватар пользователя')
+                b.publication__list-name #{comment.user.firstName} #{comment.user.lastName}
+                +dateTime(comment.createdAt)(class=`comments__date`)
+              a.publication__item-text(href=`/articles/${comment.articleId}`)
+                | #{comment.text}
+              p.publication__text-strong
+                | #{comment.article.title}
+              input(type="hidden" name="_csrf" value=csrfToken)
+              button.publication__button.button.button--close-item(type='submit')
+                span.visually-hidden Закрыть строку списка

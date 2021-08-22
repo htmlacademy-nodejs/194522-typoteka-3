@@ -66,6 +66,12 @@ class API {
     });
   }
 
+  deleteArticle(id) {
+    return this._load(`/articles/${id}`, {
+      method: `DELETE`
+    });
+  }
+
   getCategories() {
     return this._load(`/categories`);
   }
@@ -82,6 +88,26 @@ class API {
     return this._load(`/categories/${id}`);
   }
 
+  createCategory(data) {
+    return this._load(`/categories`, {
+      method: `POST`,
+      data
+    });
+  }
+
+  updateCategory(id, data) {
+    return this._load(`/categories/${id}`, {
+      method: `PUT`,
+      data
+    });
+  }
+
+  deleteCategory(id) {
+    return this._load(`/categories/${id}`, {
+      method: `DELETE`
+    });
+  }
+
   getComments({limit, isWithArticlesData}) {
     return this._load(`/comments`, {
       params: {limit, isWithArticlesData}
@@ -92,6 +118,12 @@ class API {
     return this._load(`/articles/${articleId}/comments`, {
       method: `POST`,
       data
+    });
+  }
+
+  deleteComment(id) {
+    return this._load(`/comments/${id}`, {
+      method: `DELETE`
     });
   }
 

@@ -11,7 +11,9 @@ class CategoryService {
   }
 
   async findAll() {
-    const categories = await this._Category.findAll();
+    const categories = await this._Category.findAll({
+      order: [[`updatedAt`, `DESC`]]
+    });
     return categories;
   }
 
@@ -50,6 +52,39 @@ class CategoryService {
   async findOne(id) {
     const category = await this._Category.findByPk(id);
     return category;
+  }
+
+  async findByName(name) {
+    const category = await this._Category.findOne({
+      where: {name}
+    });
+    return category ? category.get() : null;
+  }
+
+  async isArticlesRelatedWithCategory(categoryId) {
+    const articles = await this._ArticlesCategories.findAll({
+      where: {CategoryId: categoryId}
+    });
+    return !!articles.length;
+  }
+
+  async create(categoryData) {
+    const category = await this._Category.create(categoryData);
+    return category;
+  }
+
+  async update(id, data) {
+    const category = await this._Category.update(data, {
+      where: {id}
+    });
+    return category;
+  }
+
+  async delete(id) {
+    const deletedRows = await this._Category.destroy({
+      where: {id}
+    });
+    return !!deletedRows;
   }
 }
 

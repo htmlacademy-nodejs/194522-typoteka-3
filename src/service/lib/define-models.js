@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
   const Comment = defineComment(sequelize);
   const User = defineUser(sequelize);
 
-  Article.hasMany(Comment, {foreignKey: `articleId`, as: Aliase.COMMENTS});
+  Article.hasMany(Comment, {foreignKey: `articleId`, as: Aliase.COMMENTS, onDelete: `CASCADE`});
   Comment.belongsTo(Article, {foreignKey: `articleId`, as: Aliase.ARTICLE});
 
   User.hasMany(Article, {foreignKey: `userId`, as: Aliase.ARTICLES});

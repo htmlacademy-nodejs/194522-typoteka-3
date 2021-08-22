@@ -6,6 +6,7 @@ const mainRoutes = require(`./routes/main`);
 const articlesRoutes = require(`./routes/articles`);
 const myRoutes = require(`./routes/my`);
 const session = require(`./middlewares/session`);
+const categoriesRoutes = require(`./routes/categories`);
 const sequelize = require(`../service/lib/get-sequelize`)();
 
 const DEFAULT_PORT = 8080;
@@ -28,6 +29,7 @@ app.use(session(sequelize));
 app.use(`/`, mainRoutes);
 app.use(`/my`, myRoutes);
 app.use(`/articles`, articlesRoutes);
+app.use(`/categories`, categoriesRoutes);
 
 app.use((req, res) => {
   res.render(`errors/404`);

@@ -80,7 +80,11 @@ class ArticleService {
           include: {
             model: this._User,
             as: Aliase.USER
-          }
+          },
+          separate: true,
+          order: [
+            [`createdAt`, `DESC`]
+          ]
         }
       ]
     });

@@ -4,8 +4,7 @@ const {Router} = require(`express`);
 const {nanoid} = require(`nanoid`);
 const path = require(`path`);
 const {ARTICLES_PER_PAGE} = require(`../../constants`);
-const {decodeURIArray, createStorage} = require(`../../utils`);
-const privateRouteAdmin = require(`../middlewares/private-route-admin`);
+const {decodeURIArray, createStorage, asyncErrorCatcher} = require(`../../utils`);
 const api = require(`../api`).getAPI();
 
 const mainRouter = new Router();
@@ -18,7 +17,7 @@ const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 
 const upload = createStorage(uploadDirAbsolute, nanoid(UNIQUE_NAME_LENGTH));
 
-mainRouter.get(`/`, async (req, res) => {
+mainRouter.get(`/`, asyncErrorCatcher(async (req, res) => {
   const page = +req.query.page || 1;
   const {user} = req.session;
   const [
@@ -47,7 +46,7 @@ mainRouter.get(`/`, async (req, res) => {
     user,
     currentPage: page
   });
-});
+}));
 
 mainRouter.get(`/search`, async (req, res) => {
   const {title} = req.query;
@@ -57,16 +56,6 @@ mainRouter.get(`/search`, async (req, res) => {
     return res.render(`search`, {searchingTitle: title, searchResults, user});
   } catch (err) {
     return res.render(`search`, {searchingTitle: title, searchResults: [], user});
-  }
-});
-
-mainRouter.get(`/categories`, privateRouteAdmin, async (req, res, next) => {
-  const {user} = req.session;
-  try {
-    const categories = await api.getCategories();
-    res.render(`all-categories`, {categories, user});
-  } catch (err) {
-    next(err);
   }
 });
 

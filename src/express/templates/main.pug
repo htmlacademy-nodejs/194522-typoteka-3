@@ -1,60 +1,69 @@
 extends layout.pug
 
 block vars
-  - var wrapperClassNames='wrapper'
+  - const wrapperClassNames='wrapper'
+  -
+    const cutString = (string) => {
+      const MAX_LENGTH = 100;
+      return string.length > MAX_LENGTH ? `${string.slice(0, MAX_LENGTH)}...` : string;
+    }
 
 block content
   main.main-page
     h1.visually-hidden Главная страница личного блога Типотека
     p
       | Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏
-    include patrials/counted-categories.pug
-    .main-page__section-flex(class=!mostCommentedArticles.length && !comments.length && `main-page__section-flex--short`)
-      section.main-page__hot.hot
-        h2.hot__name
-          | Самое обсуждаемое
-          span.hot__icon.hot__icon--fire
-        if mostCommentedArticles.length
-          ul.hot__list
-            each article in mostCommentedArticles
-              li.hot__list-item
-                a.hot__list-link(href=`/articles/${article.id}`) #{article.title}
-                  sup.hot__link-sup #{article.commentsCount}
-        else
-          <p class="hot__empty">Здесь пока ничего нет...</p>
-      section.main-page__last.last
-        h2.last__name
-          | Последние комментарии
-          span.last__icon.last__icon--cloud
-        if comments.length
-          ul.last__list
-            each comment in comments
-              li.last__list-item
-                img.last__list-image(src=`/img/${comment.user.avatar}` width='20' height='20' alt='Аватар пользователя')
-                b.last__list-name #{comment.user.firstName} #{comment.user.lastName}
-                a.last__list-link(href=`/articles/${comment.articleId}`) #{comment.text}
-        else
-          <p class="hot__empty">Здесь пока ничего нет...</p>
-    section.main-page__list.preview
-      h2.visually-hidden Список превью статей
-      ul.preview__list
-        each article in articles
-          li.preview__item
-            ul.preview__breadcrumbs
-              each category in article.categories
-                li.preview__breadcrumbs-item
-                  a.preview__breadcrumbs-link(href=`/articles/category/${category.id}`) #{category.name}
-            if article.image
-              .preview__background
-                a(href=`/articles/${article.id}`)
-                  img.preview__background-image(src=`/img/${article.image}` alt=article.title)
-            time.preview__time(datetime='2019-03-21T20:33') #{article.createdDate}
-            h3.preview__name
-              a.preview__name-link(href=`/articles/${article.id}`) #{article.title}
-            p.preview__text #{article.announce}
-            a.preview__comment(href='#')
-              | Комментарии
-              span.preview__cloud
-              b.preview__comment-count #{article.comments.length}
-    if totalPagesCount > 1
-      +pagination(totalPagesCount, currentPage, 2)
+    if !articles.length
+      .main-page__empty-wrapper
+        p.main-page__empty-text Здесь пока пусто!
+    else
+      include patrials/counted-categories.pug
+      .main-page__section-flex(class=!mostCommentedArticles.length && !comments.length && `main-page__section-flex--short`)
+        section.main-page__hot.hot
+          h2.hot__name
+            | Самое обсуждаемое
+            span.hot__icon.hot__icon--fire
+          if mostCommentedArticles.length
+            ul.hot__list
+              each article in mostCommentedArticles
+                li.hot__list-item
+                  a.hot__list-link(href=`/articles/${article.id}`) #{cutString(article.announce)}
+                    sup.hot__link-sup #{article.commentsCount}
+          else
+            <p class="hot__empty">Здесь пока ничего нет...</p>
+        section.main-page__last.last
+          h2.last__name
+            | Последние комментарии
+            span.last__icon.last__icon--cloud
+          if comments.length
+            ul.last__list
+              each comment in comments
+                li.last__list-item
+                  img.last__list-image(src=`/img/${comment.user.avatar}` width='20' height='20' alt='Аватар пользователя')
+                  b.last__list-name #{comment.user.firstName} #{comment.user.lastName}
+                  a.last__list-link(href=`/articles/${comment.articleId}`) #{cutString(comment.text)}
+          else
+            <p class="hot__empty">Здесь пока ничего нет...</p>
+      section.main-page__list.preview
+        h2.visually-hidden Список превью статей
+        ul.preview__list
+          each article in articles
+            li.preview__item
+              ul.preview__breadcrumbs
+                each category in article.categories
+                  li.preview__breadcrumbs-item
+                    a.preview__breadcrumbs-link(href=`/articles/category/${category.id}`) #{category.name}
+              if article.image
+                .preview__background
+                  a(href=`/articles/${article.id}`)
+                    img.preview__background-image(src=`/img/${article.image}` alt=article.title)
+              +date(article.createdAt)(class=`preview__time`)
+              h3.preview__name
+                a.preview__name-link(href=`/articles/${article.id}`) #{article.title}
+              p.preview__text #{article.announce}
+              a.preview__comment(href=`/articles/${article.id}`)
+                | Комментарии
+                span.preview__cloud
+                b.preview__comment-count #{article.comments.length}
+      if totalPagesCount > 1
+        +pagination(totalPagesCount, currentPage, 2)

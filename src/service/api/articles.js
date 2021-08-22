@@ -73,15 +73,4 @@ module.exports = (apiRouter, articleService, commentService) => {
     const newComment = await commentService.create(article.id, {text, userId});
     return res.status(StatusCode.CREATED).json(newComment);
   }));
-
-  articlesRouter.delete(`/:articleId/comments/:commentId`, [schemaParamsValidator(routeParams), articleExist(articleService)], asyncErrorCatcher(async (req, res) => {
-    const {commentId} = req.params;
-    const isDeleted = await commentService.delete(commentId);
-
-    if (!isDeleted) {
-      return res.status(StatusCode.NOT_FOUND).send(`Comment ${commentId} not found`);
-    }
-
-    return res.status(StatusCode.OK).json(isDeleted);
-  }));
 };

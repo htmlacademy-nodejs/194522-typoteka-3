@@ -69,8 +69,30 @@ describe(`Returns comments`, () => {
   test(`returns 2 comments`, () => {
     expect(response.body.length).toBe(2);
   });
+});
 
-  test(`first comment's text is 'lorem ipsum'`, () => {
-    expect(response.body[0].text).toBe(`lorem ipsum`);
+describe(`Correctly deletes existing comment`, () => {
+  let app;
+  let response;
+
+  beforeAll(async () => {
+    app = await createApp();
+    response = await request(app).delete(`/comments/1`);
   });
+
+  test(`Returns status code ${StatusCode.OK}`, () => {
+    expect(response.statusCode).toBe(StatusCode.OK);
+  });
+
+  test(`Comments count decreased by 1`, () => request(app)
+    .get(`/comments`)
+    .expect((res) => expect(res.body.length).toBe(1))
+  );
+});
+
+test(`API refuses to delete non-existent comment`, async () => {
+  const app = await createApp();
+  await request(app)
+    .delete(`/comments/NOEXST`)
+    .expect(StatusCode.BAD_REQUEST);
 });

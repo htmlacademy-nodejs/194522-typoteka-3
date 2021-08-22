@@ -73,10 +73,6 @@ describe(`API returns articles`, () => {
   test(`Returns 2 articles`, () => {
     expect(response.body.length).toBe(2);
   });
-
-  test(`First article id is 1`, () => {
-    expect(response.body[0].id).toBe(1);
-  });
 });
 
 describe(`API works correctly with requesting article by id`, () => {
@@ -260,37 +256,6 @@ test(`API refuses to create a comment when data is invalid, and returns status c
   await request(app)
     .post(`/articles/1/comments`)
     .send({})
-    .expect(StatusCode.BAD_REQUEST);
-});
-
-describe(`API correctly deletes a comment`, () => {
-  let app;
-  let response;
-
-  beforeAll(async () => {
-    app = await createApp();
-    response = await request(app)
-      .delete(`/articles/1/comments/1`);
-  });
-
-  test(`Status code 200`, () => expect(response.statusCode).toBe(StatusCode.OK));
-  test(`Comments count decreased by 1`, () => request(app)
-    .get(`/articles/1/comments`)
-    .expect((res) => expect(res.body.length).toBe(0))
-  );
-});
-
-test(`API refuses to delete non-existent comment`, async () => {
-  const app = await createApp();
-  await request(app)
-    .delete(`/articles/1/comments/NOEXST`)
-    .expect(StatusCode.BAD_REQUEST);
-});
-
-test(`API refuses to delete a comment to non-existent article`, async () => {
-  const app = await createApp();
-  await request(app)
-    .delete(`/articles/NOEXST/comments/1`)
     .expect(StatusCode.BAD_REQUEST);
 });
 

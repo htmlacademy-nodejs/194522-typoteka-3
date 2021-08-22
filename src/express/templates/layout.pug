@@ -15,8 +15,14 @@ html(lang='ru')
       .pagination__item--active a{
         pointer-events: none;
       }
+      .header__avatar > img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
   body
     block vars
+    include mixins/date.pug
     include mixins/date-time.pug
     include mixins/pagination.pug
     include mixins/validation-errors.pug

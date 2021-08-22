@@ -2,7 +2,11 @@
 
 const {Router} = require(`express`);
 const csrf = require(`csurf`);
-const {createStorage, ensureArray, decodeURIArray} = require(`../../utils`);
+const {
+  createStorage,
+  ensureArray,
+  decodeURIArray,
+  asyncErrorCatcher} = require(`../../utils`);
 const {nanoid} = require(`nanoid`);
 const path = require(`path`);
 const {ARTICLES_PER_PAGE} = require(`../../constants`);
@@ -20,31 +24,27 @@ const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 const upload = createStorage(uploadDirAbsolute, nanoid(UNIQUE_NAME_LENGTH));
 const csrfProtection = csrf();
 
-articlesRouter.get(`/add`, csrfProtection, privateRouteAdmin, async (req, res) => {
+articlesRouter.get(`/add`, csrfProtection, privateRouteAdmin, asyncErrorCatcher(async (req, res) => {
   const {user} = req.session;
   const csrfToken = req.csrfToken();
   const validationErrors = decodeURIArray(req.query.validationErrors);
-  const categories = await api.getCategories();
+  const categories = await api.getCategoris();
   res.render(`new-post`, {categories, validationErrors, user, csrfToken});
-});
+}));
 
-articlesRouter.get(`/edit/:articleId`, csrfProtection, privateRouteAdmin, routeParamsValidator, async (req, res, next) => {
+articlesRouter.get(`/edit/:articleId`, csrfProtection, privateRouteAdmin, routeParamsValidator, asyncErrorCatcher(async (req, res) => {
   const {articleId} = req.params;
   const {user} = req.session;
   const validationErrors = decodeURIArray(req.query.validationErrors);
   const csrfToken = req.csrfToken();
-  try {
-    const [article, categories] = await Promise.all([
-      api.getArticle(articleId),
-      api.getCategories()
-    ]);
-    res.render(`edit-post`, {article, categories, validationErrors, user, csrfToken});
-  } catch (err) {
-    next(err);
-  }
-});
+  const [article, categories] = await Promise.all([
+    api.getArticle(articleId),
+    api.getCategories()
+  ]);
+  res.render(`edit-post`, {article, categories, validationErrors, user, csrfToken});
+}));
 
-articlesRouter.get(`/category/:categoryId`, routeParamsValidator, async (req, res) => {
+articlesRouter.get(`/category/:categoryId`, routeParamsValidator, asyncErrorCatcher(async (req, res) => {
   const {categoryId} = req.params;
   const page = +req.query.page || 1;
   const {user} = req.session;
@@ -73,15 +73,15 @@ articlesRouter.get(`/category/:categoryId`, routeParamsValidator, async (req, re
     totalPagesCount,
     user
   });
-});
+}));
 
-articlesRouter.get(`/:articleId`, csrfProtection, routeParamsValidator, async (req, res) => {
+articlesRouter.get(`/:articleId`, csrfProtection, routeParamsValidator, asyncErrorCatcher(async (req, res) => {
   const {user} = req.session;
   const validationErrors = decodeURIArray(req.query.validationErrors);
   const article = await api.getArticle(req.params.articleId);
   const csrfToken = req.csrfToken();
   res.render(`post`, {article, validationErrors, user, csrfToken});
-});
+}));
 
 articlesRouter.post(`/add`, privateRouteAdmin, upload.single(`upload`), csrfProtection, async (req, res) => {
   const {body, file} = req;
