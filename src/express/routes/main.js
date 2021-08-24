@@ -71,9 +71,15 @@ mainRouter.get(`/login`, (req, res) => {
   res.render(`login`, {validationErrors, user});
 });
 
-mainRouter.get(`/logout`, (req, res) => {
-  delete req.session.user;
-  res.redirect(`/login`);
+mainRouter.get(`/logout`, (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) {
+      next(err);
+      return;
+    }
+
+    res.redirect(`/login`);
+  });
 });
 
 mainRouter.post(`/login`, async (req, res) => {
