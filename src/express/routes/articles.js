@@ -28,7 +28,7 @@ articlesRouter.get(`/add`, csrfProtection, privateRouteAdmin, asyncErrorCatcher(
   const {user} = req.session;
   const csrfToken = req.csrfToken();
   const validationErrors = decodeURIArray(req.query.validationErrors);
-  const categories = await api.getCategoris();
+  const categories = await api.getCategories();
   res.render(`new-post`, {categories, validationErrors, user, csrfToken});
 }));
 
