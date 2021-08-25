@@ -1,8 +1,11 @@
 'use strict';
 
+const {API_LOG_FILE} = require(`../../constants`);
+const {getLogger} = require(`../../utils`);
 const Aliase = require(`../models/aliase`);
 const defineModels = require(`./define-models`);
-const logger = require(`./logger`).getLogger();
+
+const logger = getLogger(API_LOG_FILE);
 
 module.exports = async (sequelize, data) => {
   const {articles, categories, users} = data;

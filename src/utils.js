@@ -1,6 +1,7 @@
 'use strict';
 
 const multer = require(`multer`);
+const pino = require(`pino`);
 
 const getRandomInt = (min, max) => Math.floor(min + Math.random() * (max - min + 1));
 
@@ -44,6 +45,21 @@ const asyncErrorCatcher = (asyncMiddleware) => async (req, res, next) => {
   }
 };
 
+const getLogger = (logFile, options = {}) => {
+  const {Env} = require(`./constants`);
+  const isDevMode = process.env.NODE_ENV === Env.DEVELOPMENT;
+  const defaultLoggingLevel = isDevMode ? `info` : `error`;
+  const logger = pino(
+      {
+        name: `pino-base-logger`,
+        level: process.env.LOG_LEVEL || defaultLoggingLevel,
+        prettyPrint: isDevMode
+      },
+      isDevMode ? process.stdout : pino.destination(logFile)
+  );
+  return logger.child(options);
+};
+
 module.exports = {
   getRandomInt,
   getRandomArrayElement,
@@ -52,4 +68,5 @@ module.exports = {
   ensureArray,
   decodeURIArray,
   asyncErrorCatcher,
+  getLogger,
 };

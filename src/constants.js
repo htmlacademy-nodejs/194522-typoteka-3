@@ -4,6 +4,7 @@ module.exports = {
   DEFAULT_COMMAND: `--help`,
   USER_ARGV_INDEX: 2,
   API_PREFIX: `/api`,
+  API_LOG_FILE: `./logs/api.log`,
   ARTICLES_PER_PAGE: 8,
   ExitCode: {
     ERROR: 1,
