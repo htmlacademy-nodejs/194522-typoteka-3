@@ -77,10 +77,11 @@ articlesRouter.get(`/category/:categoryId`, routeParamsValidator, asyncErrorCatc
 
 articlesRouter.get(`/:articleId`, csrfProtection, routeParamsValidator, asyncErrorCatcher(async (req, res) => {
   const {user} = req.session;
+  const {referer} = req.headers;
   const validationErrors = decodeURIArray(req.query.validationErrors);
   const article = await api.getArticle(req.params.articleId);
   const csrfToken = req.csrfToken();
-  res.render(`post`, {article, validationErrors, user, csrfToken});
+  res.render(`post`, {article, validationErrors, user, csrfToken, referer});
 }));
 
 articlesRouter.post(`/add`, privateRouteAdmin, upload.single(`upload`), csrfProtection, async (req, res) => {
