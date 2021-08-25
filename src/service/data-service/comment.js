@@ -10,13 +10,15 @@ class CommentService {
 
   async findAll({limit = false, isWithArticlesData = false}) {
     const order = [[`createdAt`, `DESC`]];
-    const include = {
-      model: this._User,
-      as: Aliase.USER,
-      attributes: {
-        exclude: [`passwordHash`]
+    const include = [
+      {
+        model: this._User,
+        as: Aliase.USER,
+        attributes: {
+          exclude: [`passwordHash`]
+        }
       }
-    };
+    ];
 
     if (isWithArticlesData) {
       include.push(Aliase.ARTICLE);
