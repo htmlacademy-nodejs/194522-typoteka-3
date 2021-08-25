@@ -79,7 +79,10 @@ class ArticleService {
           as: Aliase.COMMENTS,
           include: {
             model: this._User,
-            as: Aliase.USER
+            as: Aliase.USER,
+            attributes: {
+              exclude: [`passwordHash`],
+            }
           },
           separate: true,
           order: [

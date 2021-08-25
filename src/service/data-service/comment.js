@@ -5,11 +5,18 @@ const Aliase = require(`../models/aliase`);
 class CommentService {
   constructor(sequelize) {
     this._Comment = sequelize.models.Comment;
+    this._User = sequelize.models.User;
   }
 
   async findAll({limit = false, isWithArticlesData = false}) {
     const order = [[`createdAt`, `DESC`]];
-    const include = [Aliase.USER];
+    const include = {
+      model: this._User,
+      as: Aliase.USER,
+      attributes: {
+        exclude: [`passwordHash`]
+      }
+    };
 
     if (isWithArticlesData) {
       include.push(Aliase.ARTICLE);
