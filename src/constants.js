@@ -3,7 +3,6 @@
 module.exports = {
   DEFAULT_COMMAND: `--help`,
   USER_ARGV_INDEX: 2,
-  MAX_ID_LENGTH: 5,
   API_PREFIX: `/api`,
   ARTICLES_PER_PAGE: 8,
   ExitCode: {
@@ -22,5 +21,10 @@ module.exports = {
   Env: {
     DEVELOPMENT: `development`,
     PRODUCTION: `production`
+  },
+  HttpMethod: {
+    POST: `POST`,
+    PUT: `PUT`,
+    DELETE: `DELETE`
   }
 };

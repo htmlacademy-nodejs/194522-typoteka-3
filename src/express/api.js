@@ -1,6 +1,7 @@
 'use strict';
 
 const axios = require(`axios`);
+const {HttpMethod} = require(`../constants`);
 
 const TIMEOUT = 10000;
 const port = process.env.API_PORT || 3000;
@@ -54,21 +55,21 @@ class API {
 
   createArticle(data) {
     return this._load(`/articles`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data
     });
   }
 
   editArticle(id, data) {
     return this._load(`/articles/${id}`, {
-      method: `PUT`,
+      method: HttpMethod.PUT,
       data
     });
   }
 
   deleteArticle(id) {
     return this._load(`/articles/${id}`, {
-      method: `DELETE`
+      method: HttpMethod.DELETE
     });
   }
 
@@ -90,21 +91,21 @@ class API {
 
   createCategory(data) {
     return this._load(`/categories`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data
     });
   }
 
   updateCategory(id, data) {
     return this._load(`/categories/${id}`, {
-      method: `PUT`,
+      method: HttpMethod.PUT,
       data
     });
   }
 
   deleteCategory(id) {
     return this._load(`/categories/${id}`, {
-      method: `DELETE`
+      method: HttpMethod.DELETE
     });
   }
 
@@ -116,14 +117,14 @@ class API {
 
   createComment(articleId, data) {
     return this._load(`/articles/${articleId}/comments`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data
     });
   }
 
   deleteComment(id) {
     return this._load(`/comments/${id}`, {
-      method: `DELETE`
+      method: HttpMethod.DELETE
     });
   }
 
@@ -135,14 +136,14 @@ class API {
 
   createUser(data) {
     return this._load(`/user`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data
     });
   }
 
   loginUser(data) {
     return this._load(`/user/login`, {
-      method: `POST`,
+      method: HttpMethod.POST,
       data
     });
   }

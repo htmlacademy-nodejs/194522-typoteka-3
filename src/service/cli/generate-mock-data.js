@@ -3,12 +3,13 @@
 const {nanoid} = require(`nanoid`);
 const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
-const {MAX_ID_LENGTH, ExitCode} = require(`../../constants`);
+const {ExitCode} = require(`../../constants`);
 const {getRandomArrayElements, getRandomInt, getRandomArrayElement} = require(`../../utils`);
 const passwordUtils = require(`../lib/password`);
 
 const MILLISECONDS_IN_THREE_MONTH = 7776000000;
 const MAX_MOCKS_QUANTITY = 1000;
+const MAX_ID_LENGTH = 5;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_TEXTS_PATH = `./data/texts.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
