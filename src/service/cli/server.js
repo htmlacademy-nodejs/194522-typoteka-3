@@ -1,14 +1,19 @@
 'use strict';
 
 const express = require(`express`);
-const {StatusCode, API_PREFIX, API_LOG_FILE} = require(`../../constants`);
+const {
+  StatusCode,
+  API_PREFIX,
+  API_LOG_FILE,
+  DefaultPort
+} = require(`../../constants`);
 const api = require(`../api`);
 const connectDb = require(`../lib/connect-db`);
 const getSequelize = require(`../lib/get-sequelize`);
 const defineModels = require(`../lib/define-models`);
 const {getLogger} = require(`../../utils`);
 
-const DEFAULT_PORT = 3000;
+const defaultPort = process.env.API_PORT || DefaultPort.API;
 const NOT_FOUND_MESSAGE = `Не найдено`;
 const logger = getLogger(API_LOG_FILE);
 
@@ -24,7 +29,7 @@ module.exports = {
     await initDb(sequelize);
 
     const [userParamPort] = args;
-    const port = parseInt(userParamPort, 10) || DEFAULT_PORT;
+    const port = parseInt(userParamPort, 10) || defaultPort;
     const app = express();
     const apiRouter = api(sequelize);
 

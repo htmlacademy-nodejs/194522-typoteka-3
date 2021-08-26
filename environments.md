@@ -1,4 +1,4 @@
-## СУБД
+## DB
 
 DB_HOST
 DB_PORT

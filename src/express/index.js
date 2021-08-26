@@ -8,9 +8,9 @@ const myRoutes = require(`./routes/my`);
 const session = require(`./middlewares/session`);
 const categoriesRoutes = require(`./routes/categories`);
 const {getLogger} = require(`../utils`);
+const {DefaultPort} = require(`../constants`);
 const sequelize = require(`../service/lib/get-sequelize`)();
 
-const DEFAULT_PORT = 8080;
 const PUBLIC_DIR = `public`;
 const TEMPLATES_DIR = `templates`;
 const UPLOAD_DIR = `upload`;
@@ -18,6 +18,7 @@ const LOG_FILE = `./logs/express.log`;
 const EXPRESS_LOGGER_NAME = `express-app-logger`;
 
 const app = express();
+const port = process.env.FRONT_PORT || DefaultPort.FRONT;
 const logger = getLogger(LOG_FILE, {name: EXPRESS_LOGGER_NAME});
 
 app.set(`view engine`, `pug`);
@@ -54,9 +55,9 @@ app.use((err, req, res, _next) => {
 
 sequelize.sync({force: false});
 
-app.listen(DEFAULT_PORT, (err) => {
+app.listen(port, (err) => {
   if (err) {
     return logger.error(`Unable to connect to the server: ${err}`);
   }
-  return logger.info(`Express app is running on ${DEFAULT_PORT}`);
+  return logger.info(`Express app is running on ${port}`);
 });

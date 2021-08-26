@@ -6,6 +6,10 @@ module.exports = {
   API_PREFIX: `/api`,
   API_LOG_FILE: `./logs/api.log`,
   ARTICLES_PER_PAGE: 8,
+  DefaultPort: {
+    API: 3000,
+    FRONT: 8080
+  },
   ExitCode: {
     ERROR: 1,
     SUCCESS: 0,
