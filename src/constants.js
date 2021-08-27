@@ -5,7 +5,10 @@ module.exports = {
   USER_ARGV_INDEX: 2,
   API_PREFIX: `/api`,
   API_LOG_FILE: `./logs/api.log`,
-  ARTICLES_PER_PAGE: 8,
+  ItemsQuantityPerPage: {
+    COMMON_ARTICLES: 8,
+    MOST_COMMENTED_ARTICLES: 4
+  },
   DefaultPort: {
     API: 3000,
     FRONT: 8080
@@ -28,6 +31,7 @@ module.exports = {
     PRODUCTION: `production`
   },
   HttpMethod: {
+    GET: `GET`,
     POST: `POST`,
     PUT: `PUT`,
     DELETE: `DELETE`

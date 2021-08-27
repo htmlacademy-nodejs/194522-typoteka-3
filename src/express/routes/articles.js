@@ -9,7 +9,7 @@ const {
   asyncErrorCatcher} = require(`../../utils`);
 const {nanoid} = require(`nanoid`);
 const path = require(`path`);
-const {ARTICLES_PER_PAGE} = require(`../../constants`);
+const {ItemsQuantityPerPage} = require(`../../constants`);
 const routeParamsValidator = require(`../middlewares/route-params-validator`);
 const privateRouteAdmin = require(`../middlewares/private-route-admin`);
 const privateRoute = require(`../middlewares/private-route`);
@@ -55,14 +55,14 @@ articlesRouter.get(`/category/:categoryId`, routeParamsValidator, asyncErrorCatc
   ] = await Promise.all([
     api.getLimitedArticlesByCategory({
       categoryId,
-      limit: ARTICLES_PER_PAGE,
-      offset: (page - 1) * ARTICLES_PER_PAGE
+      limit: ItemsQuantityPerPage.COMMON_ARTICLES,
+      offset: (page - 1) * ItemsQuantityPerPage.COMMON_ARTICLES
     }),
     api.getCountedCategories(),
     api.getCategory(categoryId)
   ]);
 
-  const totalPagesCount = Math.ceil(count / ARTICLES_PER_PAGE);
+  const totalPagesCount = Math.ceil(count / ItemsQuantityPerPage.COMMON_ARTICLES);
 
   res.render(`articles-by-category`, {
     articles,

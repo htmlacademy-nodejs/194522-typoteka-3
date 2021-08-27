@@ -3,13 +3,12 @@
 const {Router} = require(`express`);
 const {nanoid} = require(`nanoid`);
 const path = require(`path`);
-const {ARTICLES_PER_PAGE} = require(`../../constants`);
+const {ItemsQuantityPerPage} = require(`../../constants`);
 const {decodeURIArray, createStorage, asyncErrorCatcher} = require(`../../utils`);
 const api = require(`../api`).getAPI();
 
 const mainRouter = new Router();
 
-const MOST_COMMENTED_ITEMS_QUANTITY = 4;
 const COMMENTS_QUANTITY = 4;
 const UPLOAD_DIR = `../upload/img/`;
 const UNIQUE_NAME_LENGTH = 10;
@@ -27,15 +26,15 @@ mainRouter.get(`/`, asyncErrorCatcher(async (req, res) => {
     comments
   ] = await Promise.all([
     api.getLimitedArticles({
-      limit: ARTICLES_PER_PAGE,
-      offset: (page - 1) * ARTICLES_PER_PAGE
+      limit: ItemsQuantityPerPage.COMMON_ARTICLES,
+      offset: (page - 1) * ItemsQuantityPerPage.COMMON_ARTICLES
     }),
     api.getCountedCategories(),
-    api.getMostCommentedArticles(MOST_COMMENTED_ITEMS_QUANTITY),
+    api.getMostCommentedArticles(ItemsQuantityPerPage.MOST_COMMENTED_ARTICLES),
     api.getComments({limit: COMMENTS_QUANTITY})
   ]);
 
-  const totalPagesCount = Math.ceil(count / ARTICLES_PER_PAGE);
+  const totalPagesCount = Math.ceil(count / ItemsQuantityPerPage.COMMON_ARTICLES);
 
   res.render(`main`, {
     articles,

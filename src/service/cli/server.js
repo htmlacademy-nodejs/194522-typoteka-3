@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require(`express`);
+const http = require(`http`);
 const {
   StatusCode,
   API_PREFIX,
@@ -12,9 +13,10 @@ const connectDb = require(`../lib/connect-db`);
 const getSequelize = require(`../lib/get-sequelize`);
 const defineModels = require(`../lib/define-models`);
 const {getLogger} = require(`../../utils`);
+const socket = require(`../lib/socket`);
 
+const NOT_FOUND_MESSAGE = `Not found`;
 const defaultPort = process.env.API_PORT || DefaultPort.API;
-const NOT_FOUND_MESSAGE = `Не найдено`;
 const logger = getLogger(API_LOG_FILE);
 
 const initDb = async (sequelize) => {
@@ -31,6 +33,11 @@ module.exports = {
     const [userParamPort] = args;
     const port = parseInt(userParamPort, 10) || defaultPort;
     const app = express();
+    const server = http.createServer(app);
+
+    const socketio = socket(server);
+    app.locals.socketio = socketio;
+
     const apiRouter = api(sequelize);
 
     app.use(express.json());
@@ -55,7 +62,7 @@ module.exports = {
       res.status(StatusCode.INTERNAL_SERVER_ERROR).send(err.message);
     });
 
-    app.listen(port, (err) => {
+    server.listen(port, (err) => {
       if (err) {
         return logger.error(`Unable to connect to the server: ${err}`);
       }

@@ -4,6 +4,8 @@ const {Router} = require(`express`);
 const {StatusCode} = require(`../../constants`);
 const {asyncErrorCatcher} = require(`../../utils`);
 const articleExist = require(`../middlewares/article-exist`);
+const createComment = require(`../middlewares/create-comment`);
+const emitCommentCreation = require(`../middlewares/emit-comment-creation`);
 const schemaBodyValidator = require(`../middlewares/schema-body-validator`);
 const schemaParamsValidator = require(`../middlewares/schema-params-validator`);
 const articleSchema = require(`../schemas/article`);
@@ -67,10 +69,15 @@ module.exports = (apiRouter, articleService, commentService) => {
     return res.status(StatusCode.OK).json(comments);
   }));
 
-  articlesRouter.post(`/:articleId/comments`, [schemaParamsValidator(routeParams), articleExist(articleService), schemaBodyValidator(commentSchema)], asyncErrorCatcher(async (req, res) => {
-    const {article} = res.locals;
-    const {text, userId} = req.body;
-    const newComment = await commentService.create(article.id, {text, userId});
-    return res.status(StatusCode.CREATED).json(newComment);
-  }));
+  articlesRouter.post(`/:articleId/comments`, [
+    schemaParamsValidator(routeParams),
+    articleExist(articleService),
+    schemaBodyValidator(commentSchema),
+    createComment(commentService),
+    emitCommentCreation(articleService, commentService)
+  ],
+  (req, res) => {
+    const {comment} = res.locals;
+    return res.status(StatusCode.CREATED).json(comment);
+  });
 };

@@ -32,6 +32,21 @@ class CommentService {
     return comments;
   }
 
+  async findOneWithUserData(id) {
+    const comment = await this._Comment.findByPk(id, {
+      include: [
+        {
+          model: this._User,
+          as: Aliase.USER,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        }
+      ]
+    });
+    return comment ? comment.get() : null;
+  }
+
   async findAllByArticleId(articleId) {
     const comments = await this._Comment.findAll({
       where: {articleId},
@@ -45,7 +60,7 @@ class CommentService {
       articleId,
       ...comment,
     });
-    return createdComment;
+    return createdComment ? createdComment.get() : null;
   }
 
   async delete(id) {
