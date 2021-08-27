@@ -2,6 +2,8 @@
 
 const request = require(`supertest`);
 const express = require(`express`);
+const http = require(`http`);
+const {Server} = require(`socket.io`);
 const Sequelize = require(`sequelize`);
 const {StatusCode} = require(`../../constants`);
 const articles = require(`./articles`);
@@ -220,6 +222,7 @@ describe(`API returns comments for requested article`, () => {
 describe(`API creates a comment if data is valid`, () => {
   let app;
   let response;
+  let socketio;
 
   const newComment = {
     text: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi eaque consectetur iusto asperiores nobis voluptatem, accusantium impedit tenetur voluptas nesciunt!`,
@@ -228,6 +231,9 @@ describe(`API creates a comment if data is valid`, () => {
 
   beforeAll(async () => {
     app = await createApp();
+    const httpServer = http.createServer(app);
+    socketio = new Server(httpServer);
+    app.locals.socketio = socketio;
     response = await request(app)
       .post(`/articles/1/comments`)
       .send(newComment);
