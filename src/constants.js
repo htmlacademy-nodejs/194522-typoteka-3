@@ -7,7 +7,8 @@ module.exports = {
   API_LOG_FILE: `./logs/api.log`,
   ItemsQuantityPerPage: {
     COMMON_ARTICLES: 8,
-    MOST_COMMENTED_ARTICLES: 4
+    MOST_COMMENTED_ARTICLES: 4,
+    NEWEST_COMMENTS: 4,
   },
   DefaultPort: {
     API: 3000,

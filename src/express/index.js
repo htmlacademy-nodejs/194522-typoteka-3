@@ -1,7 +1,9 @@
 'use strict';
 
 const express = require(`express`);
+const http = require(`http`);
 const path = require(`path`);
+const socket = require(`./socket`);
 const mainRoutes = require(`./routes/main`);
 const articlesRoutes = require(`./routes/articles`);
 const myRoutes = require(`./routes/my`);
@@ -20,6 +22,9 @@ const EXPRESS_LOGGER_NAME = `express-app-logger`;
 const app = express();
 const port = process.env.FRONT_PORT || DefaultPort.FRONT;
 const logger = getLogger(LOG_FILE, {name: EXPRESS_LOGGER_NAME});
+const server = http.createServer(app);
+const socketio = socket(server);
+app.locals.socketio = socketio;
 
 app.set(`view engine`, `pug`);
 app.set(`views`, path.resolve(__dirname, TEMPLATES_DIR));
@@ -55,7 +60,7 @@ app.use((err, req, res, _next) => {
 
 sequelize.sync({force: false});
 
-app.listen(port, (err) => {
+server.listen(port, (err) => {
   if (err) {
     return logger.error(`Unable to connect to the server: ${err}`);
   }

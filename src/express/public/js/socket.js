@@ -1,9 +1,10 @@
 'use strict';
 
-const SERVER_URL = `http://localhost:3000`;
 const NEWEST_COMMENTS_QUANTITY = 4;
 
-const socket = io(SERVER_URL);
+const socket = io(document.location.origin);
+const commentsContainerElement = document.querySelector('.main-page__last');
+const commentsListElement = commentsContainerElement.querySelector('ul');
 
 const cutString = (string) => {
   const MAX_LENGTH = 100;
@@ -52,12 +53,10 @@ const updateArticlesElements = (articles) => {
   articles.forEach((article) => {
     const articleElement = createArticleElement(article);
     articlesContainerElement.append(articleElement);
-  })
+  });
 };
 
-const updateCommentsElements = (comment) => {
-  const commentsContainerElement = document.querySelector('.main-page__last');
-  const commentsListElement = commentsContainerElement.querySelector('ul');
+const prependNewCommentElement = (comment) => {
   const commentsElements = commentsListElement.querySelectorAll('li');
 
   if (commentsElements.length === NEWEST_COMMENTS_QUANTITY) {
@@ -67,7 +66,20 @@ const updateCommentsElements = (comment) => {
   commentsListElement.prepend(createCommentElement(comment));
 };
 
+const updateCommentsElements = (comments) => {
+  commentsListElement.textContent = ``;
+  comments.forEach((comment) => {
+    const commentElement = createCommentElement(comment);
+    commentsListElement.append(commentElement);
+  });
+};
+
 socket.addEventListener(`comment:create`, ({comment, articles}) => {
   updateArticlesElements(articles);
-  updateCommentsElements(comment);
+  prependNewCommentElement(comment);
+});
+
+socket.addEventListener(`comment:delete`, ({comments, articles}) => {
+  updateArticlesElements(articles);
+  updateCommentsElements(comments);
 });

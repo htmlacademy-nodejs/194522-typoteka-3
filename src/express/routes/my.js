@@ -5,6 +5,7 @@ const csrf = require(`csurf`);
 const privateRouteAdmin = require(`../middlewares/private-route-admin`);
 const routeParamsValidator = require(`../middlewares/route-params-validator`);
 const {asyncErrorCatcher} = require(`../../utils`);
+const {ItemsQuantityPerPage} = require(`../../constants`);
 const api = require(`../api`).getAPI();
 
 const csrfProtection = csrf();
@@ -29,12 +30,18 @@ myRouter.get(`/comments`, csrfProtection, asyncErrorCatcher(async (req, res) => 
 }));
 
 myRouter.post(`/delete/:articleId`, routeParamsValidator, csrfProtection, asyncErrorCatcher(async (req, res) => {
-  await api.deleteArticle(+req.params.articleId);
+  await api.deleteArticle(req.params.articleId);
   res.redirect(`/my`);
 }));
 
 myRouter.post(`/comments/delete/:commentId`, routeParamsValidator, csrfProtection, asyncErrorCatcher(async (req, res) => {
   await api.deleteComment(req.params.commentId);
+  const {socketio} = req.app.locals;
+  const [articles, comments] = await Promise.all([
+    api.getMostCommentedArticles(ItemsQuantityPerPage.MOST_COMMENTED_ARTICLES),
+    api.getComments({limit: ItemsQuantityPerPage.NEWEST_COMMENTS})
+  ]);
+  socketio.emit(`comment:delete`, {comments, articles});
   res.redirect(`/my/comments`);
 }));
 

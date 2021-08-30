@@ -115,6 +115,14 @@ class API {
     });
   }
 
+  getCommentWithUserData(id) {
+    return this._load(`/comments/${id}`, {
+      params: {
+        isWithUserData: true
+      }
+    });
+  }
+
   createComment(articleId, data) {
     return this._load(`/articles/${articleId}/comments`, {
       method: HttpMethod.POST,

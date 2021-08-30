@@ -1,7 +1,7 @@
 'use strict';
 
 const {Server} = require(`socket.io`);
-const {HttpMethod, DefaultPort} = require(`../../constants`);
+const {HttpMethod, DefaultPort} = require(`../constants`);
 
 const port = process.env.FRONT_PORT || DefaultPort.FRONT;
 

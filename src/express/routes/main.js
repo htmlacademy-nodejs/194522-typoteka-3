@@ -7,14 +7,11 @@ const {ItemsQuantityPerPage} = require(`../../constants`);
 const {decodeURIArray, createStorage, asyncErrorCatcher} = require(`../../utils`);
 const api = require(`../api`).getAPI();
 
-const mainRouter = new Router();
-
-const COMMENTS_QUANTITY = 4;
 const UPLOAD_DIR = `../upload/img/`;
 const UNIQUE_NAME_LENGTH = 10;
 const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
-
 const upload = createStorage(uploadDirAbsolute, nanoid(UNIQUE_NAME_LENGTH));
+const mainRouter = new Router();
 
 mainRouter.get(`/`, asyncErrorCatcher(async (req, res) => {
   const page = +req.query.page || 1;
@@ -31,7 +28,7 @@ mainRouter.get(`/`, asyncErrorCatcher(async (req, res) => {
     }),
     api.getCountedCategories(),
     api.getMostCommentedArticles(ItemsQuantityPerPage.MOST_COMMENTED_ARTICLES),
-    api.getComments({limit: COMMENTS_QUANTITY})
+    api.getComments({limit: ItemsQuantityPerPage.NEWEST_COMMENTS})
   ]);
 
   const totalPagesCount = Math.ceil(count / ItemsQuantityPerPage.COMMON_ARTICLES);

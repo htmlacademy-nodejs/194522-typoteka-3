@@ -32,18 +32,18 @@ class CommentService {
     return comments;
   }
 
-  async findOneWithUserData(id) {
-    const comment = await this._Comment.findByPk(id, {
-      include: [
-        {
-          model: this._User,
-          as: Aliase.USER,
-          attributes: {
-            exclude: [`passwordHash`]
-          }
+  async findOne({id, isWithUserData = false}) {
+    const include = [];
+    if (isWithUserData) {
+      include.push({
+        model: this._User,
+        as: Aliase.USER,
+        attributes: {
+          exclude: [`passwordHash`]
         }
-      ]
-    });
+      });
+    }
+    const comment = await this._Comment.findByPk(id, {include});
     return comment ? comment.get() : null;
   }
 

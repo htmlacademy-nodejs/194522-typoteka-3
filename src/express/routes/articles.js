@@ -132,7 +132,13 @@ articlesRouter.post(`/:articleId/comments`, privateRoute, routeParamsValidator, 
   const {user} = req.session;
   const {text} = req.body;
   try {
-    await api.createComment(articleId, {text, userId: user.id});
+    const comment = await api.createComment(articleId, {text, userId: user.id});
+    const {socketio} = req.app.locals;
+    const [articles, commentWithUserData] = await Promise.all([
+      api.getMostCommentedArticles(ItemsQuantityPerPage.MOST_COMMENTED_ARTICLES),
+      api.getCommentWithUserData(comment.id)
+    ]);
+    socketio.emit(`comment:create`, {comment: commentWithUserData, articles});
     res.redirect(`/articles/${articleId}`);
   } catch (err) {
     res.redirect(`/articles/${articleId}?validationErrors=${encodeURIComponent(err.response.data)}`);
