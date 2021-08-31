@@ -2,7 +2,7 @@
 
 const NEWEST_COMMENTS_QUANTITY = 4;
 
-const socket = io(document.location.origin);
+const socket = io();
 const commentsContainerElement = document.querySelector('.main-page__last');
 const commentsListElement = commentsContainerElement.querySelector('ul');
 
