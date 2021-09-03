@@ -10,7 +10,7 @@ const myRoutes = require(`./routes/my`);
 const session = require(`./middlewares/session`);
 const categoriesRoutes = require(`./routes/categories`);
 const {getLogger} = require(`../utils`);
-const {DefaultPort} = require(`../constants`);
+const {DefaultPort, StatusCode} = require(`../constants`);
 const sequelize = require(`../service/lib/get-sequelize`)();
 
 const PUBLIC_DIR = `public`;
@@ -55,7 +55,7 @@ app.use((req, res) => {
 
 app.use((err, req, res, _next) => {
   logger.error(`An error occured on processing request: ${err.message}`);
-  res.status(500).render(`errors/500`);
+  res.status(StatusCode.INTERNAL_SERVER_ERROR).render(`errors/500`);
 });
 
 sequelize.sync({force: false});

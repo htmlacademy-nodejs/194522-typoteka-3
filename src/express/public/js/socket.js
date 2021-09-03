@@ -1,14 +1,14 @@
 'use strict';
 
 const NEWEST_COMMENTS_QUANTITY = 4;
+const STRING_MAX_LENGTH = 100;
 
 const socket = io();
 const commentsContainerElement = document.querySelector('.main-page__last');
 const commentsListElement = commentsContainerElement.querySelector('ul');
 
 const cutString = (string) => {
-  const MAX_LENGTH = 100;
-  return string.length > MAX_LENGTH ? `${string.slice(0, MAX_LENGTH)}...` : string;
+  return string.length > STRING_MAX_LENGTH ? `${string.slice(0, STRING_MAX_LENGTH)}...` : string;
 };
 
 const createCommentElement = (comment) => {
